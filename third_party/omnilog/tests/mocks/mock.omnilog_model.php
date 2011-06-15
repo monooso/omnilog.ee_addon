@@ -17,6 +17,8 @@ class Mock_omnilog_model {
     public function install_module() {}
     public function install_module_actions() {}
     public function install_module_register() {}
+	public function notify_site_admin_of_log_entry($log_entry_id) {}
+    public function save_entry_to_log(Omnilog_entry $entry) {}
     public function uninstall_module() {}
     public function update_module($installed_version = '') {}
 
