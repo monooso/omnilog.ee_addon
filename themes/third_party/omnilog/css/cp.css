@@ -1,0 +1,46 @@
+/**
+ * OmniLog control panel styles.
+ *
+ * @author          Stephen Lewis (http://github.com/experience/)
+ * @copyright       Experience Internet
+ * @package         Omnilog
+ */
+
+@media screen {
+
+/* =input
+ * ------------------------------------------------------------ */
+#ei input[type='text'] {
+    width               : 97%;
+}
+
+
+/* =act
+ * ------------------------------------------------------------ */
+#ei .act {
+    padding-right       : 7px;
+    text-align          : right;
+    white-space         : nowrap;
+    width               : 44px;
+}
+
+
+/* =btn
+ * ------------------------------------------------------------ */
+#ei .btn {
+    display             : inline-block;
+    margin-right        : 3px;
+    vertical-align      : middle;
+}
+
+#ei .btn img {
+    display             : inline-block;
+    vertical-align      : middle;
+}
+
+
+} /* @media screen */
+
+
+/* End of file      : cp.css */
+/* File location    : themes/third_party/omnilog/css/cp.css */
