@@ -31,40 +31,8 @@ class Omnilog {
         $this->_ee->load->model('omnilog_model');
         $this->_model = $this->_ee->omnilog_model;
     }
-    
-    
-    /* --------------------------------------------------------------
-     * ACTION METHODS
-     * ------------------------------------------------------------ */
-    
-    /**
-     * 
-     *
-     * @access  public
-     * @return  void
-     */
-    public function ()
-    {
-        error_log('Running the  action.');
-    }
 
-    
-    /* --------------------------------------------------------------
-     * TEMPLATE TAG METHODS
-     * ------------------------------------------------------------ */
-    
-    /**
-     * 
-     *
-     * @access  public
-     * @return  string
-     */
-    public function ()
-    {
-        return $this->return_data = 'exp:omnilog: output';
-    }
 
-    
 }
 
 
