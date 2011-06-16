@@ -193,6 +193,11 @@ class Omnilog_model extends CI_Model {
                 'type'              => 'INT',
                 'unsigned'          => TRUE
             ),
+            'notify_admin' => array(
+                'constraint'        => 1,
+                'default'           => 'n',
+                'type'              => 'CHAR'
+            ),
             'type' => array(
                 'constraint'        => 10,
                 'type'              => 'VARCHAR'
@@ -238,10 +243,10 @@ class Omnilog_model extends CI_Model {
             throw new Exception($this->_ee->lang->line('exception__save_entry__missing_data'));
         }
 
-        $this->_ee->db->insert(
-            'omnilog_entries',
-            $entry->to_array()
-        );
+        $insert_data = $entry->to_array();
+        $insert_data['notify_admin'] = $entry->get_notify_admin() === TRUE ? 'y' : 'n';
+
+        $this->_ee->db->insert('omnilog_entries', $insert_data);
 
         if ( ! $insert_id = $this->_ee->db->insert_id())
         {
