@@ -103,6 +103,11 @@ class Test_omnilog_model extends Testee_unit_test_case {
                 'type'              => 'INT',
                 'unsigned'          => TRUE
             ),
+            'notify_admin' => array(
+                'constraint'        => 1,
+                'default'           => 'n',
+                'type'              => 'CHAR'
+            ),
             'type' => array(
                 'constraint'        => 10,
                 'type'              => 'VARCHAR'
@@ -145,10 +150,39 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'type'          => Omnilog_entry::NOTICE
         );
 
-        $entry = new Omnilog_entry($entry_props);
+        $insert_data    = array_merge($entry_props, array('notify_admin' => 'n'));
+        $entry          = new Omnilog_entry($entry_props);
+        $insert_id      = 10;
 
-        $insert_id = 10;
-        $db->expectOnce('insert', array('omnilog_entries', $entry_props));
+        ksort($insert_data);
+        $db->expectOnce('insert', array('omnilog_entries', $insert_data));
+        $db->setReturnValue('insert_id', $insert_id);
+
+        $expected_props = array_merge($entry_props, array('log_entry_id' => $insert_id));
+        $expected_result = new Omnilog_entry($expected_props);
+    
+        $this->assertIdentical($expected_result, $this->_subject->save_entry_to_log($entry));
+    }
+
+
+    public function test__save_entry_to_log__success_with_notify_admin()
+    {
+        $db = $this->_ee->db;
+
+        $entry_props = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'notify_admin'  => TRUE,
+            'type'          => Omnilog_entry::NOTICE
+        );
+
+        $insert_data    = array_merge($entry_props, array('notify_admin' => 'y'));
+        $entry          = new Omnilog_entry($entry_props);
+        $insert_id      = 10;
+
+        ksort($insert_data);
+        $db->expectOnce('insert', array('omnilog_entries', $insert_data));
         $db->setReturnValue('insert_id', $insert_id);
 
         $expected_props = array_merge($entry_props, array('log_entry_id' => $insert_id));

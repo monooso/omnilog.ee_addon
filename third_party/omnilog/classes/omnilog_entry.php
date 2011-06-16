@@ -20,6 +20,7 @@ class Omnilog_entry {
     private $_date;
     private $_log_entry_id;
     private $_message;
+    private $_notify_admin;
     private $_type;
     
 
@@ -84,6 +85,18 @@ class Omnilog_entry {
     {
         return $this->_log_entry_id;
     }
+
+
+    /**
+     * Returns whether the site administrator should be notified of this entry.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function get_notify_admin()
+    {
+        return $this->_notify_admin;
+    }
     
     
     /**
@@ -143,6 +156,7 @@ class Omnilog_entry {
         $this->_date            = 0;
         $this->_log_entry_id    = 0;
         $this->_message         = '';
+        $this->_notify_admin    = FALSE;
         $this->_type            = '';
 
         return $this;
@@ -206,6 +220,24 @@ class Omnilog_entry {
 
 
     /**
+     * Sets whether the site administrator should be notified of this entry.
+     *
+     * @access  public
+     * @param   bool        $notify_admin        Should the site admin be notified?
+     * @return  bool
+     */
+    public function set_notify_admin($notify_admin)
+    {
+        if (is_bool($notify_admin))
+        {
+            $this->_notify_admin = (bool) $notify_admin;
+        }
+
+        return $this->get_notify_admin();
+    }
+    
+    
+    /**
      * Sets the message.
      *
      * @access  public
@@ -254,6 +286,7 @@ class Omnilog_entry {
             'addon_name'    => $this->get_addon_name(),
             'date'          => $this->get_date(),
             'message'       => $this->get_message(),
+            'notify_admin'  => $this->get_notify_admin(),
             'type'          => $this->get_type()
         );
 

@@ -21,10 +21,9 @@ class Omnilogger {
      *
      * @access  public
 	 * @param	Omnilog_entry		$entry				The log entry.
-	 * @param	bool				$notify_admin		Should we notify the site administrator of this entry?
      * @return  bool
      */
-    public static function log(Omnilog_entry $entry, $notify_admin = FALSE)
+    public static function log(Omnilog_entry $entry)
     {
         $ee =& get_instance();
         $ee->load->model('omnilog_model');
@@ -39,7 +38,7 @@ class Omnilogger {
             return FALSE;
         }
 
-		return $notify_admin === TRUE
+		return $entry->get_notify_admin() === TRUE
 			? $ee->omnilog_model->notify_site_admin_of_log_entry($saved_entry)
 			: TRUE;
     }
