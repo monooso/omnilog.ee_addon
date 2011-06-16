@@ -35,6 +35,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
             'date'          => time() - 1000,
             'log_entry_id'  => 100,
             'message'       => 'Example log entry.',
+            'notify_admin'  => TRUE,
             'type'          => Omnilog_entry::NOTICE
         );
 
@@ -116,6 +117,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         $this->assertIdentical(0, $result->get_date());
         $this->assertIdentical(0, $result->get_log_entry_id());
         $this->assertIdentical('', $result->get_message());
+        $this->assertIdentical(FALSE, $result->get_notify_admin());
         $this->assertIdentical('', $result->get_type());
     }
 
@@ -156,6 +158,15 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         $this->assertIdentical($this->_props['message'], $this->_subject->set_message(FALSE));
         $this->assertIdentical($this->_props['message'], $this->_subject->set_message(new StdClass()));
         $this->assertIdentical($this->_props['message'], $this->_subject->set_message(NULL));
+    }
+
+
+    public function test__set_notify_admin__invalid_values()
+    {
+        $this->assertIdentical($this->_props['notify_admin'], $this->_subject->set_notify_admin(123));
+        $this->assertIdentical($this->_props['notify_admin'], $this->_subject->set_notify_admin('Invalid'));
+        $this->assertIdentical($this->_props['notify_admin'], $this->_subject->set_notify_admin(new StdClass()));
+        $this->assertIdentical($this->_props['notify_admin'], $this->_subject->set_notify_admin(NULL));
     }
 
 
