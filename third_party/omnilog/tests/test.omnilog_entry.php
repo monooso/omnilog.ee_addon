@@ -31,9 +31,9 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         parent::setUp();
 
         $this->_props = array(
-            'addon_class'   => 'Example_class',
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 1000,
+            'log_entry_id'  => 100,
             'message'       => 'Example log entry.',
             'type'          => Omnilog_entry::NOTICE
         );
@@ -60,18 +60,23 @@ class Test_omnilog_entry extends Testee_unit_test_case {
     }
 
 
-    public function test__is_populated__populated()
+    public function test__is_populated__populated_without_entry_id()
     {
-        $this->assertIdentical(TRUE, $this->_subject->is_populated());
+        unset($this->_props['log_entry_id']);
+        $subject = new Omnilog_entry($this->_props);
+        $this->assertIdentical(TRUE, $subject->is_populated());
     }
 
 
-    public function test__is_populated__not_populated()
+    public function test__is_populated__populated_with_entry_id()
     {
-        // Add-on class.
-        $props = array_merge($this->_props, array('addon_class' => ''));
-        $subject = new Omnilog_entry($props);
-        $this->assertIdentical(FALSE, $subject->is_populated());
+        $this->assertIdentical(TRUE, $this->_subject->is_populated(TRUE));
+    }
+
+
+    public function test__is_populated__not_populated_without_entry_id()
+    {
+        unset($this->_props['log_entry_id']);
 
         // Add-on name.
         $props = array_merge($this->_props, array('addon_name' => ''));
@@ -95,24 +100,23 @@ class Test_omnilog_entry extends Testee_unit_test_case {
     }
 
 
+    public function test__is_populated__not_populated_with_entry_id()
+    {
+        unset($this->_props['log_entry_id']);
+        $subject = new Omnilog_entry($this->_props);
+        $this->assertIdentical(FALSE, $subject->is_populated(TRUE));
+    }
+
+
     public function test__reset__success()
     {
         $result = $this->_subject->reset();
 
-        $this->assertIdentical('', $result->get_addon_class());
         $this->assertIdentical('', $result->get_addon_name());
         $this->assertIdentical(0, $result->get_date());
+        $this->assertIdentical(0, $result->get_log_entry_id());
         $this->assertIdentical('', $result->get_message());
-        $this->assertIdentical(0, $result->get_type());
-    }
-
-
-    public function test__set_addon_class__invalid_values()
-    {
-        $this->assertIdentical($this->_props['addon_class'], $this->_subject->set_addon_class(123));
-        $this->assertIdentical($this->_props['addon_class'], $this->_subject->set_addon_class(FALSE));
-        $this->assertIdentical($this->_props['addon_class'], $this->_subject->set_addon_class(new StdClass()));
-        $this->assertIdentical($this->_props['addon_class'], $this->_subject->set_addon_class(NULL));
+        $this->assertIdentical('', $result->get_type());
     }
 
 
@@ -136,6 +140,16 @@ class Test_omnilog_entry extends Testee_unit_test_case {
     }
 
 
+    public function test__set_log_entry_id__invalid_values()
+    {
+        $this->assertIdentical($this->_props['log_entry_id'], $this->_subject->set_log_entry_id('Invalid'));
+        $this->assertIdentical($this->_props['log_entry_id'], $this->_subject->set_log_entry_id(FALSE));
+        $this->assertIdentical($this->_props['log_entry_id'], $this->_subject->set_log_entry_id(new StdClass()));
+        $this->assertIdentical($this->_props['log_entry_id'], $this->_subject->set_log_entry_id(NULL));
+        $this->assertIdentical($this->_props['log_entry_id'], $this->_subject->set_log_entry_id(0));
+    }
+
+
     public function test__set_message__invalid_values()
     {
         $this->assertIdentical($this->_props['message'], $this->_subject->set_message(123));
@@ -151,14 +165,23 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         $this->assertIdentical($this->_props['type'], $this->_subject->set_type(FALSE));
         $this->assertIdentical($this->_props['type'], $this->_subject->set_type(new StdClass()));
         $this->assertIdentical($this->_props['type'], $this->_subject->set_type(NULL));
-        $this->assertIdentical($this->_props['type'], $this->_subject->set_type(0));
         $this->assertIdentical($this->_props['type'], $this->_subject->set_type(20));
     }
 
 
-    public function test__to_array__success()
+    public function test__to_array__success_without_entry_id()
     {
+        unset($this->_props['log_entry_id']);
         $this->assertIdentical($this->_props, $this->_subject->to_array());
+    }
+
+
+    public function test__to_array__success_with_entry_id()
+    {
+        $result = $this->_subject->to_array(TRUE);
+        ksort($result);
+
+        $this->assertIdentical($this->_props, $result);
     }
 
 

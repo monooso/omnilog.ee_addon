@@ -12,13 +12,13 @@ require_once PATH_THIRD .'omnilog/helpers/EI_number_helper' .EXT;
 
 class Omnilog_entry {
 
-    const NOTICE    = 1;
-    const WARNING   = 2;
-    const ERROR     = 3;
+    const NOTICE    = 'notice';
+    const WARNING   = 'warning';
+    const ERROR     = 'error';
 
-    private $_addon_class;
     private $_addon_name;
     private $_date;
+    private $_log_entry_id;
     private $_message;
     private $_type;
     
@@ -49,17 +49,6 @@ class Omnilog_entry {
         }
     }
 
-    /**
-     * Returns the add-on class.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function get_addon_class()
-    {
-        return $this->_addon_class;
-    }
-
 
     /**
      * Returns the add-on name.
@@ -86,6 +75,18 @@ class Omnilog_entry {
 
 
     /**
+     * Returns the log entry ID.
+     *
+     * @access  public
+     * @return  int
+     */
+    public function get_log_entry_id()
+    {
+        return $this->_log_entry_id;
+    }
+    
+    
+    /**
      * Returns the message.
      *
      * @access  public
@@ -101,7 +102,7 @@ class Omnilog_entry {
      * Returns the entry type.
      *
      * @access  public
-     * @return  int
+     * @return  string
      */
     public function get_type()
     {
@@ -114,15 +115,19 @@ class Omnilog_entry {
      * have been set to valid values.
      *
      * @access  public
+     * @param   bool        $require_entry_id       Should we check for a valid log_entry_id?
      * @return  bool
      */
-    public function is_populated()
+    public function is_populated($require_entry_id = FALSE)
     {
-        return $this->get_addon_class() != ''
-            && $this->get_addon_name()  != ''
-            && $this->get_date()        != 0
-            && $this->get_message()     != ''
-            && $this->get_type()        != 0;
+        $valid = $this->get_addon_name() != ''
+            && $this->get_date()    != 0
+            && $this->get_message() != ''
+            && $this->get_type()    != '';
+
+        return $require_entry_id === TRUE
+            ? $valid && ($this->get_log_entry_id() != 0)
+            : $valid;
     }
 
 
@@ -134,31 +139,13 @@ class Omnilog_entry {
      */
     public function reset()
     {
-        $this->_addon_class = '';
-        $this->_addon_name  = '';
-        $this->_date        = 0;
-        $this->_message     = '';
-        $this->_type        = 0;
+        $this->_addon_name      = '';
+        $this->_date            = 0;
+        $this->_log_entry_id    = 0;
+        $this->_message         = '';
+        $this->_type            = '';
 
         return $this;
-    }
-
-
-    /**
-     * Sets the add-on class.
-     *
-     * @access  public
-     * @param   string        $addon_class        The add-on class.
-     * @return  string
-     */
-    public function set_addon_class($addon_class)
-    {
-        if (is_string($addon_class))
-        {
-            $this->_addon_class = $addon_class;
-        }
-
-        return $this->get_addon_class();
     }
 
 
@@ -201,6 +188,24 @@ class Omnilog_entry {
     
     
     /**
+     * Sets the log entry ID.
+     *
+     * @access  public
+     * @param   int|string      $log_entry_id        The log entry ID.
+     * @return  int
+     */
+    public function set_log_entry_id($log_entry_id)
+    {
+        if (valid_int($log_entry_id, 1))
+        {
+            $this->_log_entry_id = $log_entry_id;
+        }
+
+        return $this->get_log_entry_id();
+    }
+
+
+    /**
      * Sets the message.
      *
      * @access  public
@@ -222,14 +227,12 @@ class Omnilog_entry {
      * Sets the entry type.
      *
      * @access  public
-     * @param   int        $type        The entry type.
-     * @return  int
+     * @param   string      $type        The entry type.
+     * @return  string
      */
     public function set_type($type)
     {
-        // Additional valid_int check required in case somebody passes in an object.
-        if (valid_int($type)
-            && in_array($type, array(self::NOTICE, self::WARNING, self::ERROR)))
+        if (in_array($type, array(self::NOTICE, self::WARNING, self::ERROR)))
         {
             $this->_type = $type;
         }
@@ -242,17 +245,24 @@ class Omnilog_entry {
      * Returns the instance as an associative array.
      *
      * @access  public
+     * @param   bool        $include_entry_id       Should we include the log_entry_id?
      * @return  array
      */
-    public function to_array()
+    public function to_array($include_entry_id = FALSE)
     {
-        return array(
-            'addon_class'   => $this->get_addon_class(),
+        $return = array(
             'addon_name'    => $this->get_addon_name(),
             'date'          => $this->get_date(),
             'message'       => $this->get_message(),
             'type'          => $this->get_type()
         );
+
+        if ($include_entry_id === TRUE)
+        {
+            $return['log_entry_id'] = $this->get_log_entry_id();
+        }
+
+        return $return;
     }
 
 
