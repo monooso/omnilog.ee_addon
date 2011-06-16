@@ -230,6 +230,19 @@ class Omnilog_model extends CI_Model {
 
 
     /**
+     * Notifies the site administrator (via email) of the supplied OmniLog Entry.
+     *
+     * @access  public
+     * @param   Omnilog_entry        $entry        The log entry.
+     * @return  bool
+     */
+    public function notify_site_admin_of_log_entry(Omnilog_entry $entry)
+    {
+        
+    }
+
+
+    /**
      * Saves the supplied OmniLog Entry to the database.
      *
      * @access  public
