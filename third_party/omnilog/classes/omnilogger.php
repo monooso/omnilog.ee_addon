@@ -29,15 +29,18 @@ class Omnilogger {
         $ee =& get_instance();
         $ee->load->model('omnilog_model');
 
-        $model = $ee->omnilog_model;
-		
-		if ( ! $entry_id = $model->save_entry_to_log($entry))
-		{
-			return FALSE;
-		}
+        try
+        {
+            $saved_entry = $ee->omnilog_model->save_entry_to_log($entry);
+        }
+        catch (Exception $e)
+        {
+            // Don't try to log the error using OmniLog, it could result in an infinite loop.
+            return FALSE;
+        }
 
 		return $notify_admin === TRUE
-			? $model->notify_site_admin_of_log_entry($entry_id)
+			? $ee->omnilog_model->notify_site_admin_of_log_entry($saved_entry)
 			: TRUE;
     }
 
