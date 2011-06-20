@@ -20,6 +20,10 @@ $lang = array(
 /* --------------------------------------------------------------
  * EXCEPTIONS
  * ------------------------------------------------------------ */
+'exception__notify_admin__email_not_sent'           => 'Unable to send administrator email.',
+'exception__notify_admin__invalid_webmaster_email'  => 'Unable to send admin email due to invalid webmaster email address.',
+'exception__notify_admin__missing_data'             => 'Unable to send admin email due to missing or invalid data.',
+
 'exception__save_entry__missing_data'   => 'Unable to save entry to log due to missing or invalid data.',
 'exception__save_entry__not_saved'      => 'A database error occurred whilst attempting to save the log entry.',
 

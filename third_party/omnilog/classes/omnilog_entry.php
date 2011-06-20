@@ -166,9 +166,9 @@ class Omnilog_entry {
     /**
      * Sets the add-on name.
      *
-     * @access    public
-     * @param    string        $addon_name        The add-on name.
-     * @return    string
+     * @access  public
+     * @param   string        $addon_name        The add-on name.
+     * @return  string
      */
     public function set_addon_name($addon_name)
     {

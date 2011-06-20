@@ -234,11 +234,73 @@ class Omnilog_model extends CI_Model {
      *
      * @access  public
      * @param   Omnilog_entry        $entry        The log entry.
-     * @return  bool
+     * @return  void
      */
     public function notify_site_admin_of_log_entry(Omnilog_entry $entry)
     {
-        
+        $this->_ee->load->helper('text');
+        $this->_ee->load->library('email');
+
+        $email  = $this->_ee->email;
+        $lang   = $this->_ee->lang;
+
+        if ( ! $entry->is_populated())
+        {
+            throw new Exception($lang->line('exception__notify_admin__missing_data'));
+        }
+
+        $webmaster_email = $this->_ee->config->item('webmaster_email');
+
+        if ($email->valid_email($webmaster_email) !== TRUE)
+        {
+            throw new Exception($lang->line('exception__notify_admin__invalid_webmaster_email'));
+        }
+
+        $webmaster_name = ($webmaster_name = $this->_ee->config->item('webmaster_name'))
+            ? $webmaster_name
+            : '';
+
+        switch ($entry->get_type())
+        {
+            case Omnilog_entry::NOTICE:
+                $lang_entry_type = $lang->line('email_entry_type_notice');
+                break;
+
+            case Omnilog_entry::WARNING:
+                $lang_entry_type = $lang->line('email_entry_type_warning');
+                break;
+
+            case Omnilog_entry::ERROR:
+                $lang_entry_type = $lang->line('email_entry_type_error');
+                break;
+
+            default:
+                $lang_entry_type = $lang->line('email_entry_type_unknown');
+                break;
+        }
+
+        $subject = ($site_name = $this->_ee->config->item('site_name'))
+            ? $lang->line('email_subject') .' (' .$site_name .')'
+            : $lang->line('email_subject');
+
+        $message = $lang->line('email_preamble') .NL .NL;
+        $message .= $lang->line('email_addon_name') .NL .$entry->get_addon_name() .NL .NL;
+        $message .= $lang->line('email_log_date') .NL .date('r', $entry->get_date()) .NL .NL;
+        $message .= $lang->line('email_entry_type') .NL .$lang_entry_type .NL .NL;
+        $message .= $lang->line('email_log_message') .NL .$entry->get_message() .NL .NL;
+        $message .= $lang->line('email_postscript');
+        $message = entities_to_ascii($message);
+
+        $email->from($webmaster_email, $webmaster_name);
+        $email->to($webmaster_email);
+        $email->subject($subject);
+        $email->message($message);
+
+        if ($email->send() !== TRUE)
+        {
+            throw new Exception($lang->line('exception__notify_admin__email_not_sent'));
+        }
+
     }
 
 
