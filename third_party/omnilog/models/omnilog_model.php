@@ -74,6 +74,40 @@ class Omnilog_model extends CI_Model {
 
 
     /**
+     * Returns the log entries. By default, only the log entries for
+     * the current site are returned.
+     *
+     * @access  public
+     * @param   int|string      $site_id        Get the log entries for the specified site ID.
+     * @return  array
+     */
+    public function get_log_entries($site_id = 0)
+    {
+        if ( ! valid_int($site_id, 1))
+        {
+            $site_id = $this->_ee->config->item('site_id');
+        }
+
+        $db = $this->_ee->db;
+        $db_result = $db->select('addon_name, date, log_entry_id, message, notify_admin, type')
+            ->from('omnilog_entries')
+            ->where(array('site_id' => $site_id))
+            ->order_by('date', 'desc')
+            ->get();
+
+        $entries = array();
+
+        foreach ($db_result->result_array() AS $db_row)
+        {
+            $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
+            $entries[] = new Omnilog_entry($db_row);
+        }
+
+        return $entries;
+    }
+
+
+    /**
      * Returns the package name.
      *
      * @access  public

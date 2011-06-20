@@ -57,6 +57,122 @@ class Test_omnilog_model extends Testee_unit_test_case {
     }
 
 
+    public function test__get_log_entries__success_default_site_id()
+    {
+        $db = $this->_ee->db;
+
+        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('from', array('omnilog_entries'));
+        $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('get');
+    
+        $db_result = $this->_get_mock('db_query');
+        $db_rows    = array(
+            array(
+                'addon_name'    => 'Example A',
+                'date'          => time() - 5000,
+                'log_entry_id'  => '10',
+                'message'       => 'Example message A-A',
+                'notify_admin'  => 'n',
+                'type'          => Omnilog_entry::NOTICE
+            ),
+            array(
+                'addon_name'    => 'Example A',
+                'date'          => time() - 4000,
+                'log_entry_id'  => '20',
+                'message'       => 'Example message A-B',
+                'notify_admin'  => 'y',
+                'type'          => Omnilog_entry::ERROR
+            ),
+            array(
+                'addon_name'    => 'Example B',
+                'date'          => time() - 3000,
+                'log_entry_id'  => '30',
+                'message'       => 'Example message B-A',
+                'notify_admin'  => 'n',
+                'type'          => Omnilog_entry::WARNING
+            )
+        );
+
+        $db->setReturnReference('get', $db_result);
+        $db_result->expectOnce('result_array');
+        $db_result->setReturnValue('result_array', $db_rows);
+
+        $expected_result = array();
+        foreach ($db_rows AS $db_row)
+        {
+            $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
+            $expected_result[] = new Omnilog_entry($db_row);
+        }
+
+        $actual_result = $this->_subject->get_log_entries();
+
+        $this->assertIdentical(count($expected_result), count($actual_result));
+        for ($count = 0, $length = count($expected_result); $count < $length; $count++)
+        {
+            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+        }
+    }
+
+
+    public function test__get_log_entries__success_custom_site_id()
+    {
+        $db = $this->_ee->db;
+        $site_id = 999;
+
+        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('from', array('omnilog_entries'));
+        $db->expectOnce('where', array(array('site_id' => $site_id)));
+        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('get');
+    
+        $db_result = $this->_get_mock('db_query');
+        $db_rows = array(
+            array(
+                'addon_name'    => 'Example A',
+                'date'          => time() - 3000,
+                'log_entry_id'  => '10',
+                'message'       => 'Example message A-A',
+                'notify_admin'  => 'n',
+                'type'          => Omnilog_entry::WARNING
+            )
+        );
+
+        $db->setReturnReference('get', $db_result);
+        $db_result->expectOnce('result_array');
+        $db_result->setReturnValue('result_array', $db_rows);
+
+        $expected_result = array();
+        foreach ($db_rows AS $db_row)
+        {
+            $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
+            $expected_result[] = new Omnilog_entry($db_row);
+        }
+
+        $actual_result = $this->_subject->get_log_entries($site_id);
+
+        $this->assertIdentical(count($expected_result), count($actual_result));
+        for ($count = 0, $length = count($expected_result); $count < $length; $count++)
+        {
+            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+        }
+    }
+
+
+    public function test__get_log_entries__no_entries()
+    {
+        $db = $this->_ee->db;
+        $db_result = $this->_get_mock('db_query');
+
+        $db->setReturnReference('get', $db_result);
+        $db_result->expectOnce('result_array');
+        $db_result->setReturnValue('result_array', array());
+
+        $this->assertIdentical(array(), $this->_subject->get_log_entries());
+    }
+
+
     public function test__get_site_id__success()
     {
         $this->_ee->config->expectOnce('item', array('site_id'));
