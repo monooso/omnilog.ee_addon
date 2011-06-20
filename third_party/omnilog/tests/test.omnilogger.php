@@ -84,9 +84,7 @@ class Test_omnilogger extends Testee_unit_test_case {
 
         $this->_model->expectOnce('save_entry_to_log', array($log_entry));
 		$this->_model->setReturnValue('save_entry_to_log', $saved_entry);
-
 		$this->_model->expectOnce('notify_site_admin_of_log_entry', array($saved_entry));
-		$this->_model->setReturnValue('notify_site_admin_of_log_entry', TRUE);
 
         $this->assertIdentical(TRUE, Omnilogger::log($log_entry));
 	}
@@ -100,7 +98,6 @@ class Test_omnilogger extends Testee_unit_test_case {
 
         $this->_model->expectOnce('save_entry_to_log', array($log_entry));
 		$this->_model->expectNever('notify_site_admin_of_log_entry');
-
         $this->_model->throwOn('save_entry_to_log', new Exception($exception_message));
 
         $this->assertIdentical(FALSE, Omnilogger::log($log_entry));
@@ -109,6 +106,7 @@ class Test_omnilogger extends Testee_unit_test_case {
 
 	public function test__log__notify_admin_failure()
 	{
+        $exception_message = 'Exception';
         $log_entry = new Omnilog_entry($this->_log_entry_props);
         $log_entry->set_notify_admin(TRUE);
 
@@ -119,7 +117,7 @@ class Test_omnilogger extends Testee_unit_test_case {
 		$this->_model->setReturnValue('save_entry_to_log', $saved_entry);
 
 		$this->_model->expectOnce('notify_site_admin_of_log_entry', array($saved_entry));
-		$this->_model->setReturnValue('notify_site_admin_of_log_entry', FALSE);
+        $this->_model->throwOn('notify_site_admin_of_log_entry', new Exception($exception_message));
 
         $this->assertIdentical(FALSE, Omnilogger::log($log_entry));
 	}
