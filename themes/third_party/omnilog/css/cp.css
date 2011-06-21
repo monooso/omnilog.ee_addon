@@ -8,36 +8,37 @@
 
 @media screen {
 
-/* =input
- * ------------------------------------------------------------ */
-#ei input[type='text'] {
-    width               : 97%;
-}
+    /* --------------------------------------------------------------
+     * ACCESSORY
+     * ------------------------------------------------------------ */
+    #omnilog .accessorySection {
+        border              : none;
+        float               : none;
+        padding             : 0;
+        width               : 100%;
+    }
 
+    #omnilog h5 {
+        display             : none;
+    }
 
-/* =act
- * ------------------------------------------------------------ */
-#ei .act {
-    padding-right       : 7px;
-    text-align          : right;
-    white-space         : nowrap;
-    width               : 44px;
-}
+    #omnilog table {
+        width               : 100%;
+    }
 
+    #omnilog td,
+    #omnilog th {
+        border-bottom       : 1px solid rgba(255, 255, 255, 0.1);
+        padding             : 10px;
+        text-align          : left;
+        vertical-align      : top;
+    }
 
-/* =btn
- * ------------------------------------------------------------ */
-#ei .btn {
-    display             : inline-block;
-    margin-right        : 3px;
-    vertical-align      : middle;
-}
-
-#ei .btn img {
-    display             : inline-block;
-    vertical-align      : middle;
-}
-
+    #omnilog th {
+        background-color    : rgba(255, 255, 255, 0.05);
+        color               : rgba(255, 255, 255, 0.85);
+        font-weight         : bold;
+    }
 
 } /* @media screen */
 

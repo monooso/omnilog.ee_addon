@@ -10,6 +10,10 @@
 
 require_once PATH_THIRD .'omnilog/models/omnilog_model' .EXT;
 
+// Helpers (not mocked).
+require_once BASEPATH .'helpers/text_helper' .EXT;
+require_once APPPATH .'helpers/EE_text_helper' .EXT;
+
 class Test_omnilog_model extends Testee_unit_test_case {
 
     private $_package_name;
@@ -50,6 +54,144 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $subject = new Omnilog_model($package_name, $package_version);
         $this->assertIdentical(strtolower($package_name), $subject->get_package_name());
         $this->assertIdentical($package_version, $subject->get_package_version());
+    }
+
+
+    public function test__get_log_entries__success_default_site_id()
+    {
+        $db = $this->_ee->db;
+
+        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('from', array('omnilog_entries'));
+        $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('get');
+        $db->expectNever('limit');
+    
+        $db_result = $this->_get_mock('db_query');
+        $db_rows    = array(
+            array(
+                'addon_name'    => 'Example A',
+                'date'          => time() - 5000,
+                'log_entry_id'  => '10',
+                'message'       => 'Example message A-A',
+                'notify_admin'  => 'n',
+                'type'          => Omnilog_entry::NOTICE
+            ),
+            array(
+                'addon_name'    => 'Example A',
+                'date'          => time() - 4000,
+                'log_entry_id'  => '20',
+                'message'       => 'Example message A-B',
+                'notify_admin'  => 'y',
+                'type'          => Omnilog_entry::ERROR
+            ),
+            array(
+                'addon_name'    => 'Example B',
+                'date'          => time() - 3000,
+                'log_entry_id'  => '30',
+                'message'       => 'Example message B-A',
+                'notify_admin'  => 'n',
+                'type'          => Omnilog_entry::WARNING
+            )
+        );
+
+        $db->setReturnReference('get', $db_result);
+        $db_result->expectOnce('result_array');
+        $db_result->setReturnValue('result_array', $db_rows);
+
+        $expected_result = array();
+        foreach ($db_rows AS $db_row)
+        {
+            $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
+            $expected_result[] = new Omnilog_entry($db_row);
+        }
+
+        $actual_result = $this->_subject->get_log_entries();
+
+        $this->assertIdentical(count($expected_result), count($actual_result));
+        for ($count = 0, $length = count($expected_result); $count < $length; $count++)
+        {
+            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+        }
+    }
+
+
+    public function test__get_log_entries__success_custom_site_id()
+    {
+        $db = $this->_ee->db;
+        $site_id = 999;
+
+        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('from', array('omnilog_entries'));
+        $db->expectOnce('where', array(array('site_id' => $site_id)));
+        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('get');
+        $db->expectNever('limit');
+    
+        $db_result = $this->_get_mock('db_query');
+        $db_rows = array(
+            array(
+                'addon_name'    => 'Example A',
+                'date'          => time() - 3000,
+                'log_entry_id'  => '10',
+                'message'       => 'Example message A-A',
+                'notify_admin'  => 'n',
+                'type'          => Omnilog_entry::WARNING
+            )
+        );
+
+        $db->setReturnReference('get', $db_result);
+        $db_result->expectOnce('result_array');
+        $db_result->setReturnValue('result_array', $db_rows);
+
+        $expected_result = array();
+        foreach ($db_rows AS $db_row)
+        {
+            $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
+            $expected_result[] = new Omnilog_entry($db_row);
+        }
+
+        $actual_result = $this->_subject->get_log_entries($site_id);
+
+        $this->assertIdentical(count($expected_result), count($actual_result));
+        for ($count = 0, $length = count($expected_result); $count < $length; $count++)
+        {
+            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+        }
+    }
+
+
+    public function test__get_log_entries__no_entries()
+    {
+        $db = $this->_ee->db;
+        $db_result = $this->_get_mock('db_query');
+
+        $db->setReturnReference('get', $db_result);
+        $db_result->expectOnce('result_array');
+        $db_result->setReturnValue('result_array', array());
+
+        $this->assertIdentical(array(), $this->_subject->get_log_entries());
+    }
+
+
+    public function test__get_log_entries__success_with_limit()
+    {
+        $db     = $this->_ee->db;
+        $limit  = 10;
+
+        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('from', array('omnilog_entries'));
+        $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('limit', array($limit));
+        $db->expectOnce('get');
+    
+        $db_result = $this->_get_mock('db_query');
+        $db->setReturnReference('get', $db_result);
+        $db_result->setReturnValue('result_array', array());
+
+        $this->assertIdentical(array(), $this->_subject->get_log_entries(NULL, $limit));
     }
 
 
@@ -136,6 +278,243 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $this->_ee->db->expectOnce('insert', array('modules', $query_data));
         $this->_subject->install_module_register();
+    }
+
+
+    public function test__notify_site_admin_of_log_entry__success()
+    {
+        $config = $this->_ee->config;
+        $email  = $this->_ee->email;
+        $lang   = $this->_ee->lang;
+
+        $entry_data = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'type'          => Omnilog_entry::ERROR
+        );
+
+        $entry = new Omnilog_entry($entry_data);
+
+        $site_name = 'Example Website';
+        $webmaster_email = 'webmaster@example.com';
+        $webmaster_name = 'Lord Vancellator';
+
+        $lang_subject       = 'Subject';
+        $lang_addon_name    = 'Add-on Name:';
+        $lang_log_date      = 'Date Logged:';
+        $lang_log_message   = 'Log Message:';
+        $lang_entry_type    = 'Severity:';
+        $lang_error         = 'Error';
+        $lang_preamble      = 'The bit before the details.';
+        $lang_postscript    = '-- End of message --';
+
+        $subject            = $lang_subject .' (' .$site_name .')';
+        $addon_name         = $lang_addon_name .NL .$entry_data['addon_name'];
+        $log_date           = $lang_log_date .NL .date('r', $entry_data['date']);
+        $log_message        = $lang_log_message .NL .$entry_data['message'];
+        $entry_type         = $lang_entry_type .NL .$lang_error;
+
+        $message = $lang_preamble
+            .NL .NL
+            .$addon_name .NL .NL
+            .$log_date .NL .NL
+            .$entry_type .NL .NL
+            .$log_message .NL .NL
+            .$lang_postscript;
+
+        $message = entities_to_ascii($message);
+
+        $config->expectCallCount('item', 3);
+        $config->setReturnValue('item', $site_name, array('site_name'));
+        $config->setReturnValue('item', $webmaster_email, array('webmaster_email'));
+        $config->setReturnValue('item', $webmaster_name, array('webmaster_name'));
+
+        $email->expectOnce('valid_email', array($webmaster_email));
+        $email->setReturnValue('valid_email', TRUE);
+        $email->expectOnce('from', array($webmaster_email, $webmaster_name));
+        $email->expectOnce('to', array($webmaster_email));
+        $email->expectOnce('subject', array($subject));
+        $email->expectOnce('message', array($message));
+        $email->expectOnce('send');
+        $email->setReturnValue('send', TRUE);
+
+        $lang->setReturnValue('line', $lang_subject, array('email_subject'));
+        $lang->setReturnValue('line', $lang_addon_name, array('email_addon_name'));
+        $lang->setReturnValue('line', $lang_log_date, array('email_log_date'));
+        $lang->setReturnValue('line', $lang_log_message, array('email_log_message'));
+        $lang->setReturnValue('line', $lang_entry_type, array('email_entry_type'));
+        $lang->setReturnValue('line', $lang_error, array('email_entry_type_error'));
+        $lang->setReturnValue('line', $lang_preamble, array('email_preamble'));
+        $lang->setReturnValue('line', $lang_postscript, array('email_postscript'));
+
+        $this->_subject->notify_site_admin_of_log_entry($entry);
+    }
+
+
+    public function test__notify_site_admin_of_log_entry__success_no_webmaster_name()
+    {
+        $config = $this->_ee->config;
+        $email  = $this->_ee->email;
+
+        $entry_data = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'type'          => Omnilog_entry::ERROR
+        );
+
+        $entry = new Omnilog_entry($entry_data);
+
+        $webmaster_email = 'webmaster@example.com';
+
+        $config->setReturnValue('item', $webmaster_email, array('webmaster_email'));
+        $email->expectOnce('valid_email', array($webmaster_email));
+        $email->setReturnValue('valid_email', TRUE);
+        $email->expectOnce('from', array($webmaster_email, ''));
+        $email->expectOnce('to', array($webmaster_email));
+        $email->expectOnce('subject');
+        $email->expectOnce('message');
+        $email->expectOnce('send');
+        $email->setReturnValue('send', TRUE);
+
+        $this->_subject->notify_site_admin_of_log_entry($entry);
+    }
+
+
+    public function test__notify_site_admin_of_log_entry__success_no_site_name()
+    {
+        $config = $this->_ee->config;
+        $email  = $this->_ee->email;
+        $lang   = $this->_ee->lang;
+
+        $entry_data = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'type'          => Omnilog_entry::ERROR
+        );
+
+        $entry = new Omnilog_entry($entry_data);
+
+        $webmaster_email = 'webmaster@example.com';
+        $webmaster_name = 'Lord Vancellator';
+        $lang_subject   = 'Subject';
+
+        $config->setReturnValue('item', $webmaster_email, array('webmaster_email'));
+        $config->setReturnValue('item', $webmaster_name, array('webmaster_name'));
+
+        $email->expectOnce('valid_email', array($webmaster_email));
+        $email->setReturnValue('valid_email', TRUE);
+        $email->expectOnce('from', array($webmaster_email, $webmaster_name));
+        $email->expectOnce('to', array($webmaster_email));
+        $email->expectOnce('subject', array($lang_subject));
+        $email->expectOnce('message');
+        $email->expectOnce('send');
+        $email->setReturnValue('send', TRUE);
+        $lang->setReturnValue('line', $lang_subject, array('email_subject'));
+
+        $this->_subject->notify_site_admin_of_log_entry($entry);
+    }
+
+
+    public function test__notify_site_admin_of_log_entry__missing_log_data()
+    {
+        $config = $this->_ee->config;
+        $email  = $this->_ee->email;
+        $lang   = $this->_ee->lang;
+    
+        $entry_data = array(
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'type'          => Omnilog_entry::ERROR
+        );
+
+        $entry = new Omnilog_entry($entry_data);
+
+        $config->expectNever('item');
+        $email->expectNever('valid_email');
+        $email->expectNever('from');
+        $email->expectNever('to');
+        $email->expectNever('subject');
+        $email->expectNever('message');
+        $email->expectNever('send');
+
+        $error_message = 'Error';
+        $lang->setReturnValue('line', $error_message, array('exception__notify_admin__missing_data'));
+
+        $this->expectException(new Exception($error_message));
+        $this->_subject->notify_site_admin_of_log_entry($entry);
+    }
+
+
+    public function test__notify_site_admin_of_log_entry__invalid_webmaster_email()
+    {
+        $config = $this->_ee->config;
+        $email  = $this->_ee->email;
+        $lang   = $this->_ee->lang;
+    
+        $entry_data = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'type'          => Omnilog_entry::ERROR
+        );
+
+        $entry = new Omnilog_entry($entry_data);
+
+        $webmaster_email = 'invalid';
+        $config->expectOnce('item', array('webmaster_email'));
+        $config->setReturnValue('item', $webmaster_email);
+
+        $email->expectOnce('valid_email', array($webmaster_email));
+        $email->setReturnValue('valid_email', FALSE);
+
+        $email->expectNever('from');
+        $email->expectNever('to');
+        $email->expectNever('subject');
+        $email->expectNever('message');
+        $email->expectNever('send');
+
+        $error_message = 'Error';
+        $lang->setReturnValue('line', $error_message, array('exception__notify_admin__invalid_webmaster_email'));
+
+        $this->expectException(new Exception($error_message));
+        $this->_subject->notify_site_admin_of_log_entry($entry);
+    }
+
+
+    public function test__notify_site_admin_of_log_entry__email_not_sent()
+    {
+        $config = $this->_ee->config;
+        $email  = $this->_ee->email;
+        $lang   = $this->_ee->lang;
+    
+        $entry_data = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'type'          => Omnilog_entry::ERROR
+        );
+
+        $entry = new Omnilog_entry($entry_data);
+
+        $webmaster_email = 'webmaster@example.com';
+        $config->setReturnValue('item', $webmaster_email);
+        $email->setReturnValue('valid_email', TRUE);
+
+        $email->expectOnce('from');
+        $email->expectOnce('to');
+        $email->expectOnce('subject');
+        $email->expectOnce('message');
+        $email->expectOnce('send');
+        $email->setReturnValue('send', FALSE);
+
+        $error_message = 'Error';
+        $lang->setReturnValue('line', $error_message, array('exception__notify_admin__email_not_sent'));
+
+        $this->expectException(new Exception($error_message));
+        $this->_subject->notify_site_admin_of_log_entry($entry);
     }
 
 

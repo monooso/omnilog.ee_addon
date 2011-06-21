@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         0.2.0
+ * @version         0.9.0
  */
 
 require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
@@ -57,8 +57,7 @@ class Omnilog_model extends CI_Model {
         $this->_ee              =& get_instance();
         $this->_namespace       = $namespace        ? strtolower($namespace)    : 'experience';
         $this->_package_name    = $package_name     ? strtolower($package_name) : 'omnilog';
-        $this->_package_version = $package_version  ? $package_version          : '0.2.0';
- 
+        $this->_package_version = $package_version  ? $package_version          : '0.9.0';
 
         // Initialise the add-on cache.
         if ( ! array_key_exists($this->_namespace, $this->_ee->session->cache))
@@ -70,6 +69,46 @@ class Omnilog_model extends CI_Model {
         {
             $this->_ee->session->cache[$this->_namespace][$this->_package_name] = array();
         }
+    }
+
+
+    /**
+     * Returns the log entries. By default, only the log entries for
+     * the current site are returned.
+     *
+     * @access  public
+     * @param   int|string      $site_id        Get the log entries for the specified site ID.
+     * @param   int             $limit          The maximum number of log entries to retrieve.
+     * @return  array
+     */
+    public function get_log_entries($site_id = NULL, $limit = NULL)
+    {
+        if ( ! valid_int($site_id, 1))
+        {
+            $site_id = $this->_ee->config->item('site_id');
+        }
+
+        $db = $this->_ee->db;
+        $db->select('addon_name, date, log_entry_id, message, notify_admin, type')
+            ->from('omnilog_entries')
+            ->where(array('site_id' => $site_id))
+            ->order_by('date', 'desc');
+
+        if (valid_int($limit, 1))
+        {
+            $db->limit($limit);
+        }
+
+        $db_result  = $db->get();
+        $entries    = array();
+
+        foreach ($db_result->result_array() AS $db_row)
+        {
+            $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
+            $entries[] = new Omnilog_entry($db_row);
+        }
+
+        return $entries;
     }
 
 
@@ -234,11 +273,73 @@ class Omnilog_model extends CI_Model {
      *
      * @access  public
      * @param   Omnilog_entry        $entry        The log entry.
-     * @return  bool
+     * @return  void
      */
     public function notify_site_admin_of_log_entry(Omnilog_entry $entry)
     {
-        
+        $this->_ee->load->helper('text');
+        $this->_ee->load->library('email');
+
+        $email  = $this->_ee->email;
+        $lang   = $this->_ee->lang;
+
+        if ( ! $entry->is_populated())
+        {
+            throw new Exception($lang->line('exception__notify_admin__missing_data'));
+        }
+
+        $webmaster_email = $this->_ee->config->item('webmaster_email');
+
+        if ($email->valid_email($webmaster_email) !== TRUE)
+        {
+            throw new Exception($lang->line('exception__notify_admin__invalid_webmaster_email'));
+        }
+
+        $webmaster_name = ($webmaster_name = $this->_ee->config->item('webmaster_name'))
+            ? $webmaster_name
+            : '';
+
+        switch ($entry->get_type())
+        {
+            case Omnilog_entry::NOTICE:
+                $lang_entry_type = $lang->line('email_entry_type_notice');
+                break;
+
+            case Omnilog_entry::WARNING:
+                $lang_entry_type = $lang->line('email_entry_type_warning');
+                break;
+
+            case Omnilog_entry::ERROR:
+                $lang_entry_type = $lang->line('email_entry_type_error');
+                break;
+
+            default:
+                $lang_entry_type = $lang->line('email_entry_type_unknown');
+                break;
+        }
+
+        $subject = ($site_name = $this->_ee->config->item('site_name'))
+            ? $lang->line('email_subject') .' (' .$site_name .')'
+            : $lang->line('email_subject');
+
+        $message = $lang->line('email_preamble') .NL .NL;
+        $message .= $lang->line('email_addon_name') .NL .$entry->get_addon_name() .NL .NL;
+        $message .= $lang->line('email_log_date') .NL .date('r', $entry->get_date()) .NL .NL;
+        $message .= $lang->line('email_entry_type') .NL .$lang_entry_type .NL .NL;
+        $message .= $lang->line('email_log_message') .NL .$entry->get_message() .NL .NL;
+        $message .= $lang->line('email_postscript');
+        $message = entities_to_ascii($message);
+
+        $email->from($webmaster_email, $webmaster_name);
+        $email->to($webmaster_email);
+        $email->subject($subject);
+        $email->message($message);
+
+        if ($email->send() !== TRUE)
+        {
+            throw new Exception($lang->line('exception__notify_admin__email_not_sent'));
+        }
+
     }
 
 
