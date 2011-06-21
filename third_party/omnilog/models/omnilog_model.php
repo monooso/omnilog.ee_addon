@@ -79,9 +79,10 @@ class Omnilog_model extends CI_Model {
      *
      * @access  public
      * @param   int|string      $site_id        Get the log entries for the specified site ID.
+     * @param   int             $limit          The maximum number of log entries to retrieve.
      * @return  array
      */
-    public function get_log_entries($site_id = 0)
+    public function get_log_entries($site_id = NULL, $limit = NULL)
     {
         if ( ! valid_int($site_id, 1))
         {
@@ -89,13 +90,18 @@ class Omnilog_model extends CI_Model {
         }
 
         $db = $this->_ee->db;
-        $db_result = $db->select('addon_name, date, log_entry_id, message, notify_admin, type')
+        $db->select('addon_name, date, log_entry_id, message, notify_admin, type')
             ->from('omnilog_entries')
             ->where(array('site_id' => $site_id))
-            ->order_by('date', 'desc')
-            ->get();
+            ->order_by('date', 'desc');
 
-        $entries = array();
+        if (valid_int($limit, 1))
+        {
+            $db->limit($limit);
+        }
+
+        $db_result  = $db->get();
+        $entries    = array();
 
         foreach ($db_result->result_array() AS $db_row)
         {

@@ -66,6 +66,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
         $db->expectOnce('order_by', array('date', 'desc'));
         $db->expectOnce('get');
+        $db->expectNever('limit');
     
         $db_result = $this->_get_mock('db_query');
         $db_rows    = array(
@@ -126,6 +127,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db->expectOnce('where', array(array('site_id' => $site_id)));
         $db->expectOnce('order_by', array('date', 'desc'));
         $db->expectOnce('get');
+        $db->expectNever('limit');
     
         $db_result = $this->_get_mock('db_query');
         $db_rows = array(
@@ -170,6 +172,26 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db_result->setReturnValue('result_array', array());
 
         $this->assertIdentical(array(), $this->_subject->get_log_entries());
+    }
+
+
+    public function test__get_log_entries__success_with_limit()
+    {
+        $db     = $this->_ee->db;
+        $limit  = 10;
+
+        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('from', array('omnilog_entries'));
+        $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('limit', array($limit));
+        $db->expectOnce('get');
+    
+        $db_result = $this->_get_mock('db_query');
+        $db->setReturnReference('get', $db_result);
+        $db_result->setReturnValue('result_array', array());
+
+        $this->assertIdentical(array(), $this->_subject->get_log_entries(NULL, $limit));
     }
 
 
