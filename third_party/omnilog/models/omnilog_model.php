@@ -327,6 +327,7 @@ class Omnilog_model extends CI_Model {
         $message .= $lang->line('email_log_date') .NL .date('r', $entry->get_date()) .NL .NL;
         $message .= $lang->line('email_entry_type') .NL .$lang_entry_type .NL .NL;
         $message .= $lang->line('email_log_message') .NL .$entry->get_message() .NL .NL;
+        $message .= $lang->line('email_cp_url') .NL .$this->_ee->config->item('cp_url') .NL .NL;
         $message .= $lang->line('email_postscript');
         $message = entities_to_ascii($message);
 

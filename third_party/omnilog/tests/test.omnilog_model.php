@@ -296,12 +296,14 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $entry = new Omnilog_entry($entry_data);
 
-        $site_name = 'Example Website';
+        $cp_url         = 'http://example.com/system/index.php';
+        $site_name      = 'Example Website';
         $webmaster_email = 'webmaster@example.com';
         $webmaster_name = 'Lord Vancellator';
 
         $lang_subject       = 'Subject';
         $lang_addon_name    = 'Add-on Name:';
+        $lang_cp_url        = 'Control Panel URL:';
         $lang_log_date      = 'Date Logged:';
         $lang_log_message   = 'Log Message:';
         $lang_entry_type    = 'Severity:';
@@ -311,6 +313,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $subject            = $lang_subject .' (' .$site_name .')';
         $addon_name         = $lang_addon_name .NL .$entry_data['addon_name'];
+        $log_cp_url         = $lang_cp_url .NL .$cp_url;
         $log_date           = $lang_log_date .NL .date('r', $entry_data['date']);
         $log_message        = $lang_log_message .NL .$entry_data['message'];
         $entry_type         = $lang_entry_type .NL .$lang_error;
@@ -321,11 +324,13 @@ class Test_omnilog_model extends Testee_unit_test_case {
             .$log_date .NL .NL
             .$entry_type .NL .NL
             .$log_message .NL .NL
+            .$log_cp_url .NL .NL
             .$lang_postscript;
 
         $message = entities_to_ascii($message);
 
-        $config->expectCallCount('item', 3);
+        $config->expectCallCount('item', 4);
+        $config->setReturnValue('item', $cp_url, array('cp_url'));
         $config->setReturnValue('item', $site_name, array('site_name'));
         $config->setReturnValue('item', $webmaster_email, array('webmaster_email'));
         $config->setReturnValue('item', $webmaster_name, array('webmaster_name'));
@@ -341,6 +346,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $lang->setReturnValue('line', $lang_subject, array('email_subject'));
         $lang->setReturnValue('line', $lang_addon_name, array('email_addon_name'));
+        $lang->setReturnValue('line', $lang_cp_url, array('email_cp_url'));
         $lang->setReturnValue('line', $lang_log_date, array('email_log_date'));
         $lang->setReturnValue('line', $lang_log_message, array('email_log_message'));
         $lang->setReturnValue('line', $lang_entry_type, array('email_entry_type'));
