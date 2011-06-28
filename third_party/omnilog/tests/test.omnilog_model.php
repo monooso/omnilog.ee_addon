@@ -522,22 +522,30 @@ class Test_omnilog_model extends Testee_unit_test_case {
     {
         $db = $this->_ee->db;
 
-        $entry_props = array(
+        $entry_data = array(
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'notify_admin'  => FALSE,
             'type'          => Omnilog_entry::NOTICE
         );
 
-        $insert_data    = array_merge($entry_props, array('notify_admin' => 'n'));
-        $entry          = new Omnilog_entry($entry_props);
+        $insert_data = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'notify_admin'  => 'n',
+            'type'          => Omnilog_entry::NOTICE,
+            'site_id'       => $this->_site_id
+        );
+
+        $entry          = new Omnilog_entry($entry_data);
         $insert_id      = 10;
 
-        ksort($insert_data);
         $db->expectOnce('insert', array('omnilog_entries', $insert_data));
         $db->setReturnValue('insert_id', $insert_id);
 
-        $expected_props = array_merge($entry_props, array('log_entry_id' => $insert_id));
+        $expected_props = array_merge($entry_data, array('log_entry_id' => $insert_id));
         $expected_result = new Omnilog_entry($expected_props);
     
         $this->assertIdentical($expected_result, $this->_subject->save_entry_to_log($entry));
@@ -548,23 +556,30 @@ class Test_omnilog_model extends Testee_unit_test_case {
     {
         $db = $this->_ee->db;
 
-        $entry_props = array(
+        $entry_data = array(
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => TRUE,
-            'type'          => Omnilog_entry::NOTICE
+            'type'          => Omnilog_entry::ERROR
         );
 
-        $insert_data    = array_merge($entry_props, array('notify_admin' => 'y'));
-        $entry          = new Omnilog_entry($entry_props);
+        $insert_data = array(
+            'addon_name'    => 'Example Add-on',
+            'date'          => time() - 100,
+            'message'       => 'Example OmniLog entry.',
+            'notify_admin'  => 'y',
+            'type'          => Omnilog_entry::ERROR,
+            'site_id'       => $this->_site_id
+        );
+
+        $entry          = new Omnilog_entry($entry_data);
         $insert_id      = 10;
 
-        ksort($insert_data);
         $db->expectOnce('insert', array('omnilog_entries', $insert_data));
         $db->setReturnValue('insert_id', $insert_id);
 
-        $expected_props = array_merge($entry_props, array('log_entry_id' => $insert_id));
+        $expected_props = array_merge($entry_data, array('log_entry_id' => $insert_id));
         $expected_result = new Omnilog_entry($expected_props);
     
         $this->assertIdentical($expected_result, $this->_subject->save_entry_to_log($entry));

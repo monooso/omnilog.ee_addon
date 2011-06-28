@@ -357,8 +357,13 @@ class Omnilog_model extends CI_Model {
             throw new Exception($this->_ee->lang->line('exception__save_entry__missing_data'));
         }
 
-        $insert_data = $entry->to_array();
-        $insert_data['notify_admin'] = $entry->get_notify_admin() === TRUE ? 'y' : 'n';
+        $insert_data = array_merge(
+            $entry->to_array(),
+            array(
+                'notify_admin'  => ($entry->get_notify_admin() === TRUE) ? 'y' : 'n',
+                'site_id'       => $this->get_site_id()
+            )
+        );
 
         $this->_ee->db->insert('omnilog_entries', $insert_data);
 
