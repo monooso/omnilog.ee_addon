@@ -36,7 +36,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
             'log_entry_id'  => 100,
             'message'       => 'Example log entry.',
             'notify_admin'  => TRUE,
-            'type'          => Omnilog_entry::NOTICE
+            'type'          => Omnilog_entry::WARNING
         );
 
         $this->_subject = new Omnilog_entry($this->_props);
@@ -118,7 +118,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         $this->assertIdentical(0, $result->get_log_entry_id());
         $this->assertIdentical('', $result->get_message());
         $this->assertIdentical(FALSE, $result->get_notify_admin());
-        $this->assertIdentical('', $result->get_type());
+        $this->assertIdentical(Omnilog_entry::NOTICE, $result->get_type());
     }
 
 

@@ -157,7 +157,7 @@ class Omnilog_entry {
         $this->_log_entry_id    = 0;
         $this->_message         = '';
         $this->_notify_admin    = FALSE;
-        $this->_type            = '';
+        $this->_type            = self::NOTICE;
 
         return $this;
     }
