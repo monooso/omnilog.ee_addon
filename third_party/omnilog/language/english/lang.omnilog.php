@@ -18,6 +18,22 @@ $lang = array(
 
 
 /* --------------------------------------------------------------
+ * EMAIL
+ * ------------------------------------------------------------ */
+'email_addon_name'          => 'Add-on Name:',
+'email_cp_url'              => 'Control Panel URL:',
+'email_entry_type'          => 'Severity:',
+'email_entry_type_error'    => 'Error',
+'email_entry_type_notice'   => 'Notice',
+'email_entry_type_warning'  => 'Warning',
+'email_log_date'            => 'Log Entry Date:',
+'email_log_message'         => 'Log Message:',
+'email_postscript'          => '--- END OF MESSAGE ---',
+'email_preamble'            => 'OmniLog was instructed to notify the site administrator of the following log entry.',
+'email_subject'             => 'OmniLog Entry Notification',
+
+
+/* --------------------------------------------------------------
  * EXCEPTIONS
  * ------------------------------------------------------------ */
 'exception__notify_admin__email_not_sent'           => 'Unable to send administrator email.',
