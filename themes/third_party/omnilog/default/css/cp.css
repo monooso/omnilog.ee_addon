@@ -1,0 +1,27 @@
+/**
+ * OmniLog 'default' theme control panel styles.
+ *
+ * @author          Stephen Lewis (http://github.com/experience/)
+ * @copyright       Experience Internet
+ * @package         Omnilog
+ */
+
+@media screen {
+
+    /* --------------------------------------------------------------
+     * ACCESSORY
+     * ------------------------------------------------------------ */
+    #omnilog td {
+        border-bottom-color : rgb(68, 80, 88);
+    }
+
+    #omnilog th {
+        border-bottom-color : rgb(95, 113, 124);
+        color               : rgb(255, 255, 255);
+    }
+
+} /* @media screen */
+
+
+/* End of file      : cp.css */
+/* File location    : themes/third_party/omnilog/default/css/cp.css */

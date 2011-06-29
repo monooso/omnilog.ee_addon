@@ -65,8 +65,15 @@ class Omnilog_acc {
      */
     public function set_sections()
     {
-        $this->_theme_url   = $this->_model->get_package_theme_url();
-        $this->_ee->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' .$this->_theme_url .'css/cp.css" />');
+        $this->_theme_url = $this->_model->get_package_theme_url();
+
+        $common_css = $this->_theme_url .'common/css/cp.css';
+        $theme_css  = $this->_ee->config->item('cp_theme') == 'corporate'
+            ? $this->_theme_url .'corporate/css/cp.css'
+            : $this->_theme_url .'default/css/cp.css';
+
+        $this->_ee->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' .$common_css .'" />');
+        $this->_ee->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' .$theme_css .'" />');
 
         $vars = array('log_entries' => $this->_model->get_log_entries(NULL, 10));
         $this->sections[$this->_ee->lang->line('hd_log')] = $this->_ee->load->view('accessory', $vars, TRUE);
