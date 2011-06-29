@@ -1,5 +1,5 @@
 /**
- * OmniLog control panel styles.
+ * Common OmniLog control panel styles.
  *
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
@@ -28,15 +28,13 @@
 
     #omnilog td,
     #omnilog th {
-        border-bottom       : 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom       : 1px solid rgb(153, 153, 153);
         padding             : 10px;
         text-align          : left;
         vertical-align      : top;
     }
 
     #omnilog th {
-        background-color    : rgba(255, 255, 255, 0.05);
-        color               : rgba(255, 255, 255, 0.85);
         font-weight         : bold;
     }
 
@@ -44,4 +42,4 @@
 
 
 /* End of file      : cp.css */
-/* File location    : themes/third_party/omnilog/css/cp.css */
+/* File location    : themes/third_party/omnilog/common/css/cp.css */
