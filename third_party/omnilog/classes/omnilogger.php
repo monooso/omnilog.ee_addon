@@ -26,6 +26,7 @@ class Omnilogger {
     public static function log(Omnilog_entry $entry)
     {
         $ee =& get_instance();
+        $ee->load->add_package_path(PATH_THIRD .'omnilog/');
         $ee->load->model('omnilog_model');
 
         try
