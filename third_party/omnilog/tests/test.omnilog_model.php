@@ -548,6 +548,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $entry          = new Omnilog_entry($entry_data);
         $insert_id      = 10;
 
+        $db->expectOnce('table_exists', array('omnilog_entries'));
+        $db->setReturnValue('table_exists', TRUE);
+
         $db->expectOnce('insert', array('omnilog_entries', $insert_data));
         $db->setReturnValue('insert_id', $insert_id);
 
@@ -582,6 +585,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $entry          = new Omnilog_entry($entry_data);
         $insert_id      = 10;
 
+        $db->expectOnce('table_exists', array('omnilog_entries'));
+        $db->setReturnValue('table_exists', TRUE);
+
         $db->expectOnce('insert', array('omnilog_entries', $insert_data));
         $db->setReturnValue('insert_id', $insert_id);
 
@@ -592,10 +598,28 @@ class Test_omnilog_model extends Testee_unit_test_case {
     }
 
 
+    public function test__save_entry_to_log__not_installed()
+    {
+        $exception_message = 'Exception';
+        $this->_ee->lang->setReturnValue('line', $exception_message);
+
+        $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
+        $this->_ee->db->setReturnValue('table_exists', FALSE);
+
+        $this->_ee->db->expectNever('insert');
+        $this->expectException(new Exception($exception_message));
+
+        $this->_subject->save_entry_to_log(new Omnilog_entry());
+    }
+
+
     public function test__save_entry_to_log__missing_entry_data()
     {
         $exception_message = 'Exception';
         $this->_ee->lang->setReturnValue('line', $exception_message);
+
+        $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
+        $this->_ee->db->setReturnValue('table_exists', TRUE);
 
         $this->_ee->db->expectNever('insert');
         $this->expectException(new Exception($exception_message));
@@ -617,6 +641,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $exception_message = 'Exception';
         $this->_ee->lang->setReturnValue('line', $exception_message);
+
+        $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
+        $this->_ee->db->setReturnValue('table_exists', TRUE);
 
         $this->_ee->db->expectOnce('insert');
         $this->_ee->db->expectOnce('insert_id');

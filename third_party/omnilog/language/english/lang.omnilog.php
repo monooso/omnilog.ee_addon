@@ -41,6 +41,7 @@ $lang = array(
 'exception__notify_admin__missing_data'             => 'Unable to send admin email due to missing or invalid data.',
 
 'exception__save_entry__missing_data'   => 'Unable to save entry to log due to missing or invalid data.',
+'exception__save_entry__not_installed'  => 'The OmniLog module does not appear to be installed.',
 'exception__save_entry__not_saved'      => 'A database error occurred whilst attempting to save the log entry.',
 
 

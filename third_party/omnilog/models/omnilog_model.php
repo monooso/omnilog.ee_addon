@@ -353,6 +353,16 @@ class Omnilog_model extends CI_Model {
      */
     public function save_entry_to_log(Omnilog_entry $entry)
     {
+        /**
+         * This method could conceivably be called when the module is
+         * not installed, but the Omnilogger class is present.
+         */
+
+        if ( ! $this->_ee->db->table_exists('omnilog_entries'))
+        {
+            throw new Exception($this->_ee->lang->line('exception__save_entry__not_installed'));
+        }
+
         if ( ! $entry->is_populated())
         {
             throw new Exception($this->_ee->lang->line('exception__save_entry__missing_data'));
