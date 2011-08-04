@@ -106,7 +106,7 @@ class Omnilog_model extends CI_Model {
         }
 
         $db = $this->_ee->db;
-        $db->select('addon_name, date, log_entry_id, message, notify_admin, type')
+        $db->select('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type')
             ->from('omnilog_entries')
             ->where(array('site_id' => $site_id))
             ->order_by('date', 'desc');
@@ -121,8 +121,9 @@ class Omnilog_model extends CI_Model {
 
         foreach ($db_result->result_array() AS $db_row)
         {
+            $db_row['admin_emails'] = explode('|', $db_row['admin_emails']);
             $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
-            $entries[] = new Omnilog_entry($db_row);
+            $entries[]              = new Omnilog_entry($db_row);
         }
 
         return $entries;
