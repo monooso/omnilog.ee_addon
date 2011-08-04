@@ -727,8 +727,17 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     public function test__update_module__update_required()
     {
-        $installed_version = '0.9.0';
-        $this->assertIdentical(TRUE, $this->_subject->update_module($installed_version));
+        /**
+         * Arbitrarily high numbers, so no
+         * update scripts are triggered.
+         */
+
+        $installed_version  = '10.0.0';
+        $package_version    = '10.0.1';
+        $package_name       = 'example_package';
+        $subject            = new Omnilog_model($package_name, $package_version);
+
+        $this->assertIdentical(TRUE, $subject->update_module($installed_version));
     }
 
 
@@ -736,6 +745,23 @@ class Test_omnilog_model extends Testee_unit_test_case {
     {
         $installed_version = '';
         $this->assertIdentical(TRUE, $this->_subject->update_module($installed_version));
+    }
+
+
+    public function test__update_module__update_to_version_110()
+    {
+        $installed_version  = '1.0.0';
+        $package_version    = '1.1.0';
+        $package_name       = 'example_package';
+        $subject            = new Omnilog_model($package_name, $package_version);
+
+        $column = array(
+            'admin_emails' => array('type' => 'MEDIUMTEXT')
+        );
+
+        $this->_ee->dbforge->expectOnce('add_column', array('omnilog_entries', $column));
+
+        $this->assertIdentical(TRUE, $subject->update_module($installed_version));
     }
 
 

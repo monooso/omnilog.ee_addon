@@ -37,6 +37,23 @@ class Omnilog_model extends CI_Model {
     }
 
 
+    /**
+     * Performs the necessary updates when upgrading to v1.1.0.
+     *
+     * @access  private
+     * @return  void
+     */
+    private function _update_module_to_version_110()
+    {
+        $this->_ee->load->dbforge();
+
+        $this->_ee->dbforge->add_column(
+            'omnilog_entries',
+            array('admin_emails' => array('type' => 'MEDIUMTEXT'))
+        );
+    }
+
+
     /* --------------------------------------------------------------
      * PUBLIC METHODS
      * ------------------------------------------------------------ */
@@ -437,6 +454,11 @@ class Omnilog_model extends CI_Model {
         if (version_compare($installed_version, $this->get_package_version(), '>='))
         {
             return FALSE;
+        }
+
+        if (version_compare($installed_version, '1.1.0', '<'))
+        {
+            $this->_update_module_to_version_110();
         }
 
         return TRUE;
