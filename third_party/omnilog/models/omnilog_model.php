@@ -227,6 +227,9 @@ class Omnilog_model extends CI_Model {
                 'constraint'        => 50,
                 'type'              => 'VARCHAR'
             ),
+            'admin_emails' => array(
+                'type'              => 'MEDIUMTEXT'
+            ),
             'date' => array(
                 'constraint'        => 10,
                 'type'              => 'INT',
@@ -375,6 +378,8 @@ class Omnilog_model extends CI_Model {
                 'site_id'       => $this->get_site_id()
             )
         );
+
+        $insert_data['admin_emails'] = implode($insert_data['admin_emails'], '|');
 
         $this->_ee->db->insert('omnilog_entries', $insert_data);
 

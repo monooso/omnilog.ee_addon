@@ -112,7 +112,10 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $this->assertIdentical(count($expected_result), count($actual_result));
         for ($count = 0, $length = count($expected_result); $count < $length; $count++)
         {
-            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+            $this->assertIdentical(
+                $expected_result[$count]->to_array(TRUE),
+                $actual_result[$count]->to_array(TRUE)
+            );
         }
     }
 
@@ -157,7 +160,10 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $this->assertIdentical(count($expected_result), count($actual_result));
         for ($count = 0, $length = count($expected_result); $count < $length; $count++)
         {
-            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+            $this->assertIdentical(
+                $expected_result[$count]->to_array(TRUE),
+                $actual_result[$count]->to_array(TRUE)
+            );
         }
     }
 
@@ -239,6 +245,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name' => array(
                 'constraint'        => 50,
                 'type'              => 'VARCHAR'
+            ),
+            'admin_emails' => array(
+                'type'              => 'MEDIUMTEXT',
             ),
             'date' => array(
                 'constraint'        => 10,
@@ -526,10 +535,15 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     public function test__save_entry_to_log__success()
     {
-        $db = $this->_ee->db;
+        $db     = $this->_ee->db;
+        $email  = $this->_ee->email;
+
+        // Ensures that the emails are added to the Omnilog_entry.
+        $email->setReturnValue('valid_email', TRUE);
 
         $entry_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => array('adam@ants.com', 'bob@dylan.com'),
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => FALSE,
@@ -538,6 +552,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $insert_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => 'adam@ants.com|bob@dylan.com',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => 'n',
@@ -556,17 +571,23 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $expected_props = array_merge($entry_data, array('log_entry_id' => $insert_id));
         $expected_result = new Omnilog_entry($expected_props);
+        $actual_result  = $this->_subject->save_entry_to_log($entry);
     
-        $this->assertIdentical($expected_result, $this->_subject->save_entry_to_log($entry));
+        $this->assertIdentical($expected_result->to_array(TRUE), $actual_result->to_array(TRUE));
     }
 
 
     public function test__save_entry_to_log__success_with_notify_admin()
     {
         $db = $this->_ee->db;
+        $email  = $this->_ee->email;
+
+        // Ensures that the emails are added to the Omnilog_entry.
+        $email->setReturnValue('valid_email', TRUE);
 
         $entry_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => array('adam@ants.com', 'bob@dylan.com'),
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => TRUE,
@@ -575,6 +596,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $insert_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => 'adam@ants.com|bob@dylan.com',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => 'y',
@@ -593,8 +615,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $expected_props = array_merge($entry_data, array('log_entry_id' => $insert_id));
         $expected_result = new Omnilog_entry($expected_props);
+        $actual_result  = $this->_subject->save_entry_to_log($entry);
     
-        $this->assertIdentical($expected_result, $this->_subject->save_entry_to_log($entry));
+        $this->assertIdentical($expected_result->to_array(TRUE), $actual_result->to_array(TRUE));
     }
 
 
