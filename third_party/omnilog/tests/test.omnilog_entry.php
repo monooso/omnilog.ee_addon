@@ -8,7 +8,7 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
+require_once PATH_THIRD .'omnilog/classes/omnilog_entry.php';
 
 class Test_omnilog_entry extends Testee_unit_test_case {
 
@@ -32,6 +32,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
 
         $this->_props = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => array('adam@ants.com', 'bob@dylan.com'),
             'date'          => time() - 1000,
             'log_entry_id'  => 100,
             'message'       => 'Example log entry.',
@@ -39,6 +40,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
             'type'          => Omnilog_entry::WARNING
         );
 
+        $this->_ee->email->setReturnValue('valid_email', TRUE);
         $this->_subject = new Omnilog_entry($this->_props);
     }
 
@@ -50,6 +52,15 @@ class Test_omnilog_entry extends Testee_unit_test_case {
             $method_name = 'get_' .$prop_name;
             $this->assertIdentical($prop_value, $this->_subject->$method_name());
         }
+    }
+
+
+    public function test__admin_emails__no_admin_emails()
+    {
+        unset($this->_props['admin_emails']);
+        $subject = new Omnilog_entry($this->_props);
+
+        $this->assertIdentical(array(), $subject->get_admin_emails());
     }
 
 
@@ -114,6 +125,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         $result = $this->_subject->reset();
 
         $this->assertIdentical('', $result->get_addon_name());
+        $this->assertIdentical(array(), $result->get_admin_emails());
         $this->assertIdentical(0, $result->get_date());
         $this->assertIdentical(0, $result->get_log_entry_id());
         $this->assertIdentical('', $result->get_message());
@@ -128,6 +140,18 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         $this->assertIdentical($this->_props['addon_name'], $this->_subject->set_addon_name(FALSE));
         $this->assertIdentical($this->_props['addon_name'], $this->_subject->set_addon_name(new StdClass()));
         $this->assertIdentical($this->_props['addon_name'], $this->_subject->set_addon_name(NULL));
+    }
+
+
+    public function test__set_admin_emails__invalid_emails()
+    {
+        $invalid_email  = 'bob';
+        $valid_email    = 'bob@bob.com';
+
+        $this->_ee->email->setReturnValueAt(2, 'valid_email', FALSE);
+        $this->_ee->email->setReturnValueAt(3, 'valid_email', TRUE);
+
+        $this->assertIdentical(array($valid_email), $this->_subject->set_admin_emails(array($invalid_email, $valid_email)));
     }
 
 
