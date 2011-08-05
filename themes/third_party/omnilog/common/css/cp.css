@@ -14,6 +14,7 @@
     #omnilog .accessorySection {
         border              : none;
         float               : none;
+        line-height         : 15px;
         padding             : 0;
         width               : 100%;
     }
@@ -36,6 +37,16 @@
 
     #omnilog th {
         font-weight         : bold;
+    }
+
+
+    /* --------------------------------------------------------------
+     * MODULE
+     * ------------------------------------------------------------ */
+    .experienceinternet td,
+    .experienceinternet th {
+        line-height         : 16px;
+        vertical-align      : top;
     }
 
 } /* @media screen */

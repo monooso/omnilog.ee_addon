@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.0.1
+ * @version         1.1.0
  */
 
 require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
@@ -37,6 +37,23 @@ class Omnilog_model extends CI_Model {
     }
 
 
+    /**
+     * Performs the necessary updates when upgrading to v1.1.0.
+     *
+     * @access  private
+     * @return  void
+     */
+    private function _update_module_to_version_110()
+    {
+        $this->_ee->load->dbforge();
+
+        $this->_ee->dbforge->add_column(
+            'omnilog_entries',
+            array('admin_emails' => array('type' => 'MEDIUMTEXT'))
+        );
+    }
+
+
     /* --------------------------------------------------------------
      * PUBLIC METHODS
      * ------------------------------------------------------------ */
@@ -57,7 +74,7 @@ class Omnilog_model extends CI_Model {
         $this->_ee              =& get_instance();
         $this->_namespace       = $namespace        ? strtolower($namespace)    : 'experience';
         $this->_package_name    = $package_name     ? strtolower($package_name) : 'omnilog';
-        $this->_package_version = $package_version  ? $package_version          : '1.0.1';
+        $this->_package_version = $package_version  ? $package_version          : '1.1.0';
 
         // Initialise the add-on cache.
         if ( ! array_key_exists($this->_namespace, $this->_ee->session->cache))
@@ -89,10 +106,10 @@ class Omnilog_model extends CI_Model {
         }
 
         $db = $this->_ee->db;
-        $db->select('addon_name, date, log_entry_id, message, notify_admin, type')
+        $db->select('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type')
             ->from('omnilog_entries')
             ->where(array('site_id' => $site_id))
-            ->order_by('date', 'desc');
+            ->order_by('log_entry_id', 'desc');
 
         if (valid_int($limit, 1))
         {
@@ -104,8 +121,9 @@ class Omnilog_model extends CI_Model {
 
         foreach ($db_result->result_array() AS $db_row)
         {
+            $db_row['admin_emails'] = explode('|', $db_row['admin_emails']);
             $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
-            $entries[] = new Omnilog_entry($db_row);
+            $entries[]              = new Omnilog_entry($db_row);
         }
 
         return $entries;
@@ -226,6 +244,9 @@ class Omnilog_model extends CI_Model {
             'addon_name' => array(
                 'constraint'        => 50,
                 'type'              => 'VARCHAR'
+            ),
+            'admin_emails' => array(
+                'type'              => 'MEDIUMTEXT'
             ),
             'date' => array(
                 'constraint'        => 10,
@@ -353,6 +374,16 @@ class Omnilog_model extends CI_Model {
      */
     public function save_entry_to_log(Omnilog_entry $entry)
     {
+        /**
+         * This method could conceivably be called when the module is
+         * not installed, but the Omnilogger class is present.
+         */
+
+        if ( ! $this->_ee->db->table_exists('omnilog_entries'))
+        {
+            throw new Exception($this->_ee->lang->line('exception__save_entry__not_installed'));
+        }
+
         if ( ! $entry->is_populated())
         {
             throw new Exception($this->_ee->lang->line('exception__save_entry__missing_data'));
@@ -365,6 +396,8 @@ class Omnilog_model extends CI_Model {
                 'site_id'       => $this->get_site_id()
             )
         );
+
+        $insert_data['admin_emails'] = implode($insert_data['admin_emails'], '|');
 
         $this->_ee->db->insert('omnilog_entries', $insert_data);
 
@@ -422,6 +455,11 @@ class Omnilog_model extends CI_Model {
         if (version_compare($installed_version, $this->get_package_version(), '>='))
         {
             return FALSE;
+        }
+
+        if (version_compare($installed_version, '1.1.0', '<'))
+        {
+            $this->_update_module_to_version_110();
         }
 
         return TRUE;

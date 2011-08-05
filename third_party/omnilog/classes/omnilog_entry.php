@@ -16,7 +16,9 @@ class Omnilog_entry {
     const WARNING   = 'warning';
     const ERROR     = 'error';
 
+    private $_ee;
     private $_addon_name;
+    private $_admin_emails;
     private $_date;
     private $_log_entry_id;
     private $_message;
@@ -37,6 +39,9 @@ class Omnilog_entry {
      */
     public function __construct(Array $props = array())
     {
+        $this->_ee =& get_instance();
+        $this->_ee->load->library('email');
+
         $this->reset();
 
         foreach ($props AS $prop_name => $prop_value)
@@ -52,6 +57,24 @@ class Omnilog_entry {
 
 
     /**
+     * Adds an email address to the 'admin emails' array.
+     *
+     * @access  public
+     * @param   string      $email      The email address.
+     * @return  array
+     */
+    public function add_admin_email($email)
+    {
+        if ($this->_ee->email->valid_email($email))
+        {
+            $this->_admin_emails[] = $email;
+        }
+
+        return $this->get_admin_emails();
+    }
+
+
+    /**
      * Returns the add-on name.
      *
      * @access    public
@@ -60,6 +83,18 @@ class Omnilog_entry {
     public function get_addon_name()
     {
         return $this->_addon_name;
+    }
+
+
+    /**
+     * Returns an array of admin email addresses.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function get_admin_emails()
+    {
+        return $this->_admin_emails;
     }
 
 
@@ -97,8 +132,8 @@ class Omnilog_entry {
     {
         return $this->_notify_admin;
     }
-    
-    
+
+
     /**
      * Returns the message.
      *
@@ -109,8 +144,8 @@ class Omnilog_entry {
     {
         return $this->_message;
     }
-    
-    
+
+
     /**
      * Returns the entry type.
      *
@@ -153,6 +188,7 @@ class Omnilog_entry {
     public function reset()
     {
         $this->_addon_name      = '';
+        $this->_admin_emails    = array();
         $this->_date            = 0;
         $this->_log_entry_id    = 0;
         $this->_message         = '';
@@ -179,8 +215,28 @@ class Omnilog_entry {
 
         return $this->get_addon_name();
     }
-    
-    
+
+
+    /**
+     * Sets the admin email addresses.
+     *
+     * @access  public
+     * @param   array       $emails     An array of email addresses.
+     * @return  array
+     */
+    public function set_admin_emails(Array $emails = array())
+    {
+        $this->_admin_emails = array();
+
+        foreach ($emails AS $email)
+        {
+            $this->add_admin_email($email);
+        }
+
+        return $this->get_admin_emails();
+    }
+
+
     /**
      * Sets the entry date.
      *
@@ -284,6 +340,7 @@ class Omnilog_entry {
     {
         $return = array(
             'addon_name'    => $this->get_addon_name(),
+            'admin_emails'  => $this->get_admin_emails(),
             'date'          => $this->get_date(),
             'message'       => $this->get_message(),
             'notify_admin'  => $this->get_notify_admin(),

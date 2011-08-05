@@ -61,10 +61,10 @@ class Test_omnilog_model extends Testee_unit_test_case {
     {
         $db = $this->_ee->db;
 
-        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
-        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('order_by', array('log_entry_id', 'desc'));
         $db->expectOnce('get');
         $db->expectNever('limit');
     
@@ -72,6 +72,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db_rows    = array(
             array(
                 'addon_name'    => 'Example A',
+                'admin_emails'  => 'adam@ants.com|bob@dylan.com',
                 'date'          => time() - 5000,
                 'log_entry_id'  => '10',
                 'message'       => 'Example message A-A',
@@ -80,6 +81,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             ),
             array(
                 'addon_name'    => 'Example A',
+                'admin_emails'  => '',
                 'date'          => time() - 4000,
                 'log_entry_id'  => '20',
                 'message'       => 'Example message A-B',
@@ -88,6 +90,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             ),
             array(
                 'addon_name'    => 'Example B',
+                'admin_emails'  => 'chas@dave.com|eric@roberts.com|dead@weather.com',
                 'date'          => time() - 3000,
                 'log_entry_id'  => '30',
                 'message'       => 'Example message B-A',
@@ -103,8 +106,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $expected_result = array();
         foreach ($db_rows AS $db_row)
         {
+            $db_row['admin_emails'] = explode('|', $db_row['admin_emails']);
             $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
-            $expected_result[] = new Omnilog_entry($db_row);
+            $expected_result[]      = new Omnilog_entry($db_row);
         }
 
         $actual_result = $this->_subject->get_log_entries();
@@ -112,7 +116,10 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $this->assertIdentical(count($expected_result), count($actual_result));
         for ($count = 0, $length = count($expected_result); $count < $length; $count++)
         {
-            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+            $this->assertIdentical(
+                $expected_result[$count]->to_array(TRUE),
+                $actual_result[$count]->to_array(TRUE)
+            );
         }
     }
 
@@ -122,10 +129,10 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db = $this->_ee->db;
         $site_id = 999;
 
-        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $site_id)));
-        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('order_by', array('log_entry_id', 'desc'));
         $db->expectOnce('get');
         $db->expectNever('limit');
     
@@ -133,6 +140,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db_rows = array(
             array(
                 'addon_name'    => 'Example A',
+                'admin_emails'  => '',
                 'date'          => time() - 3000,
                 'log_entry_id'  => '10',
                 'message'       => 'Example message A-A',
@@ -148,8 +156,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $expected_result = array();
         foreach ($db_rows AS $db_row)
         {
+            $db_row['admin_emails'] = explode('|', $db_row['admin_emails']);
             $db_row['notify_admin'] = (strtolower($db_row['notify_admin']) === 'y');
-            $expected_result[] = new Omnilog_entry($db_row);
+            $expected_result[]      = new Omnilog_entry($db_row);
         }
 
         $actual_result = $this->_subject->get_log_entries($site_id);
@@ -157,7 +166,10 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $this->assertIdentical(count($expected_result), count($actual_result));
         for ($count = 0, $length = count($expected_result); $count < $length; $count++)
         {
-            $this->assertIdentical($expected_result[$count], $actual_result[$count]);
+            $this->assertIdentical(
+                $expected_result[$count]->to_array(TRUE),
+                $actual_result[$count]->to_array(TRUE)
+            );
         }
     }
 
@@ -180,10 +192,10 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db     = $this->_ee->db;
         $limit  = 10;
 
-        $db->expectOnce('select', array('addon_name, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
-        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('order_by', array('log_entry_id', 'desc'));
         $db->expectOnce('limit', array($limit));
         $db->expectOnce('get');
     
@@ -239,6 +251,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name' => array(
                 'constraint'        => 50,
                 'type'              => 'VARCHAR'
+            ),
+            'admin_emails' => array(
+                'type'              => 'MEDIUMTEXT',
             ),
             'date' => array(
                 'constraint'        => 10,
@@ -526,10 +541,15 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     public function test__save_entry_to_log__success()
     {
-        $db = $this->_ee->db;
+        $db     = $this->_ee->db;
+        $email  = $this->_ee->email;
+
+        // Ensures that the emails are added to the Omnilog_entry.
+        $email->setReturnValue('valid_email', TRUE);
 
         $entry_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => array('adam@ants.com', 'bob@dylan.com'),
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => FALSE,
@@ -538,6 +558,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $insert_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => 'adam@ants.com|bob@dylan.com',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => 'n',
@@ -548,22 +569,31 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $entry          = new Omnilog_entry($entry_data);
         $insert_id      = 10;
 
+        $db->expectOnce('table_exists', array('omnilog_entries'));
+        $db->setReturnValue('table_exists', TRUE);
+
         $db->expectOnce('insert', array('omnilog_entries', $insert_data));
         $db->setReturnValue('insert_id', $insert_id);
 
         $expected_props = array_merge($entry_data, array('log_entry_id' => $insert_id));
         $expected_result = new Omnilog_entry($expected_props);
+        $actual_result  = $this->_subject->save_entry_to_log($entry);
     
-        $this->assertIdentical($expected_result, $this->_subject->save_entry_to_log($entry));
+        $this->assertIdentical($expected_result->to_array(TRUE), $actual_result->to_array(TRUE));
     }
 
 
     public function test__save_entry_to_log__success_with_notify_admin()
     {
         $db = $this->_ee->db;
+        $email  = $this->_ee->email;
+
+        // Ensures that the emails are added to the Omnilog_entry.
+        $email->setReturnValue('valid_email', TRUE);
 
         $entry_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => array('adam@ants.com', 'bob@dylan.com'),
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => TRUE,
@@ -572,6 +602,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $insert_data = array(
             'addon_name'    => 'Example Add-on',
+            'admin_emails'  => 'adam@ants.com|bob@dylan.com',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
             'notify_admin'  => 'y',
@@ -582,13 +613,32 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $entry          = new Omnilog_entry($entry_data);
         $insert_id      = 10;
 
+        $db->expectOnce('table_exists', array('omnilog_entries'));
+        $db->setReturnValue('table_exists', TRUE);
+
         $db->expectOnce('insert', array('omnilog_entries', $insert_data));
         $db->setReturnValue('insert_id', $insert_id);
 
         $expected_props = array_merge($entry_data, array('log_entry_id' => $insert_id));
         $expected_result = new Omnilog_entry($expected_props);
+        $actual_result  = $this->_subject->save_entry_to_log($entry);
     
-        $this->assertIdentical($expected_result, $this->_subject->save_entry_to_log($entry));
+        $this->assertIdentical($expected_result->to_array(TRUE), $actual_result->to_array(TRUE));
+    }
+
+
+    public function test__save_entry_to_log__not_installed()
+    {
+        $exception_message = 'Exception';
+        $this->_ee->lang->setReturnValue('line', $exception_message);
+
+        $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
+        $this->_ee->db->setReturnValue('table_exists', FALSE);
+
+        $this->_ee->db->expectNever('insert');
+        $this->expectException(new Exception($exception_message));
+
+        $this->_subject->save_entry_to_log(new Omnilog_entry());
     }
 
 
@@ -596,6 +646,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
     {
         $exception_message = 'Exception';
         $this->_ee->lang->setReturnValue('line', $exception_message);
+
+        $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
+        $this->_ee->db->setReturnValue('table_exists', TRUE);
 
         $this->_ee->db->expectNever('insert');
         $this->expectException(new Exception($exception_message));
@@ -617,6 +670,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $exception_message = 'Exception';
         $this->_ee->lang->setReturnValue('line', $exception_message);
+
+        $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
+        $this->_ee->db->setReturnValue('table_exists', TRUE);
 
         $this->_ee->db->expectOnce('insert');
         $this->_ee->db->expectOnce('insert_id');
@@ -677,8 +733,17 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     public function test__update_module__update_required()
     {
-        $installed_version = '0.9.0';
-        $this->assertIdentical(TRUE, $this->_subject->update_module($installed_version));
+        /**
+         * Arbitrarily high numbers, so no
+         * update scripts are triggered.
+         */
+
+        $installed_version  = '10.0.0';
+        $package_version    = '10.0.1';
+        $package_name       = 'example_package';
+        $subject            = new Omnilog_model($package_name, $package_version);
+
+        $this->assertIdentical(TRUE, $subject->update_module($installed_version));
     }
 
 
@@ -686,6 +751,23 @@ class Test_omnilog_model extends Testee_unit_test_case {
     {
         $installed_version = '';
         $this->assertIdentical(TRUE, $this->_subject->update_module($installed_version));
+    }
+
+
+    public function test__update_module__update_to_version_110()
+    {
+        $installed_version  = '1.0.0';
+        $package_version    = '1.1.0';
+        $package_name       = 'example_package';
+        $subject            = new Omnilog_model($package_name, $package_version);
+
+        $column = array(
+            'admin_emails' => array('type' => 'MEDIUMTEXT')
+        );
+
+        $this->_ee->dbforge->expectOnce('add_column', array('omnilog_entries', $column));
+
+        $this->assertIdentical(TRUE, $subject->update_module($installed_version));
     }
 
 
