@@ -765,14 +765,14 @@ class Test_omnilog_model extends Testee_unit_test_case {
     }
 
 
-    public function test__update_module__no_update_required()
+    public function test__update_package__no_update_required()
     {
         $installed_version = $this->_package_version;
-        $this->assertIdentical(FALSE, $this->_subject->update_module($installed_version));
+        $this->assertIdentical(FALSE, $this->_subject->update_package($installed_version));
     }
 
 
-    public function test__update_module__update_required()
+    public function test__update_package__update_required()
     {
         /**
          * Arbitrarily high numbers, so no
@@ -784,18 +784,40 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $package_name       = 'example_package';
         $subject            = new Omnilog_model($package_name, $package_version);
 
-        $this->assertIdentical(TRUE, $subject->update_module($installed_version));
+        $this->assertIdentical(TRUE, $subject->update_package($installed_version));
     }
 
 
-    public function test__update_module__no_installed_version()
+    public function test__update_package__update_required_force_version_bump()
+    {
+        /**
+         * Arbitrarily high numbers, so no
+         * update scripts are triggered.
+         */
+
+        $installed_version  = '10.0.0';
+        $package_version    = '10.0.1';
+        $package_name       = 'example_package';
+        $subject            = new Omnilog_model($package_name, $package_version);
+
+        $this->_ee->db->expectOnce('update', array(
+            'modules',
+            array('module_version' => $package_version),
+            array('module_name' => $this->_package_name)
+        ));
+
+        $this->assertIdentical(TRUE, $subject->update_package($installed_version, TRUE));
+    }
+
+
+    public function test__update_package__no_installed_version()
     {
         $installed_version = '';
-        $this->assertIdentical(TRUE, $this->_subject->update_module($installed_version));
+        $this->assertIdentical(TRUE, $this->_subject->update_package($installed_version));
     }
 
 
-    public function test__update_module__update_to_version_110()
+    public function test__update_package__update_to_version_110()
     {
         $installed_version  = '1.0.0';
         $package_version    = '1.1.0';
@@ -808,7 +830,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
         $this->_ee->dbforge->expectOnce('add_column', array('omnilog_entries', $column));
 
-        $this->assertIdentical(TRUE, $subject->update_module($installed_version));
+        $this->assertIdentical(TRUE, $subject->update_package($installed_version));
     }
 
 
