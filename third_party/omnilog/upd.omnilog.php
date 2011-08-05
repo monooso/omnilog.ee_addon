@@ -70,7 +70,7 @@ class Omnilog_upd {
      */
     public function update($installed_version = '')
     {
-        return $this->_model->update_module($installed_version);
+        return $this->_model->update_package($installed_version);
     }
     
 }

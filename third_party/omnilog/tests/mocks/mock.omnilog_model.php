@@ -21,7 +21,7 @@ class Mock_omnilog_model {
 	public function notify_site_admin_of_log_entry(Omnilog_entry $entry) {}
     public function save_entry_to_log(Omnilog_entry $entry) {}
     public function uninstall_module() {}
-    public function update_module($installed_version = '') {}
+    public function update_package($installed_version = '') {}
 
 }
 
