@@ -64,7 +64,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
-        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('order_by', array('log_entry_id', 'desc'));
         $db->expectOnce('get');
         $db->expectNever('limit');
     
@@ -132,7 +132,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $site_id)));
-        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('order_by', array('log_entry_id', 'desc'));
         $db->expectOnce('get');
         $db->expectNever('limit');
     
@@ -195,7 +195,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
-        $db->expectOnce('order_by', array('date', 'desc'));
+        $db->expectOnce('order_by', array('log_entry_id', 'desc'));
         $db->expectOnce('limit', array($limit));
         $db->expectOnce('get');
     

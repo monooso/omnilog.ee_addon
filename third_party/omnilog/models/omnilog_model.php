@@ -109,7 +109,7 @@ class Omnilog_model extends CI_Model {
         $db->select('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type')
             ->from('omnilog_entries')
             ->where(array('site_id' => $site_id))
-            ->order_by('date', 'desc');
+            ->order_by('log_entry_id', 'desc');
 
         if (valid_int($limit, 1))
         {
