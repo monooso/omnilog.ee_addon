@@ -90,6 +90,25 @@ class Omnilog_model extends CI_Model {
 
 
     /**
+     * Returns the installed package version.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function get_installed_version()
+    {
+        $db = $this->_ee->db;
+
+        $db_result = $db->select('module_version')
+            ->get_where('modules', array('module_name' => $this->get_package_name()), 1);
+
+        return $db_result->num_rows() === 1
+            ? $db_result->row()->module_version
+            : '';
+    }
+
+
+    /**
      * Returns the log entries. By default, only the log entries for
      * the current site are returned.
      *
