@@ -10,6 +10,7 @@
 
 class Mock_omnilog_model {
 
+    public function get_log_entries($site_id = NULL, $limit = NULL) {}
     public function get_package_name() {}
     public function get_package_theme_url() {}
     public function get_package_version() {}
