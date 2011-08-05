@@ -43,6 +43,9 @@ class Omnilog_acc {
         $this->_ee->load->model('omnilog_model');
         $this->_model = $this->_ee->omnilog_model;
 
+        // Update the package, if required.
+        $this->_model->update_package($this->_model->get_installed_version(), TRUE);
+
         // Instance properties.
         $this->description  = $this->_ee->lang->line('omnilog_module_description');
         $this->id           = $this->_model->get_package_name();

@@ -8,8 +8,9 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/upd.omnilog' .EXT;
-require_once PATH_THIRD .'omnilog/tests/mocks/mock.omnilog_model' .EXT;
+require_once PATH_THIRD .'omnilog/upd.omnilog.php';
+require_once PATH_THIRD .'omnilog/classes/omnilog_entry.php';
+require_once PATH_THIRD .'omnilog/tests/mocks/mock.omnilog_model.php';
 
 class Test_omnilog_upd extends Testee_unit_test_case {
 
@@ -59,8 +60,8 @@ class Test_omnilog_upd extends Testee_unit_test_case {
         $installed_version  = '1.0.0';
         $return_value       = 'Huzzah!';        // Should just be passed along.
 
-        $this->_model->expectOnce('update_module', array($installed_version));
-        $this->_model->setReturnValue('update_module', $return_value);
+        $this->_model->expectOnce('update_package', array($installed_version));
+        $this->_model->setReturnValue('update_package', $return_value);
         $this->assertIdentical($return_value, $this->_subject->update($installed_version));
     }
 

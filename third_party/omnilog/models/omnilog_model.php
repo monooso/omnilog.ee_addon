@@ -43,7 +43,7 @@ class Omnilog_model extends CI_Model {
      * @access  private
      * @return  void
      */
-    private function _update_module_to_version_110()
+    private function _update_package_to_version_110()
     {
         $this->_ee->load->dbforge();
 
@@ -86,6 +86,25 @@ class Omnilog_model extends CI_Model {
         {
             $this->_ee->session->cache[$this->_namespace][$this->_package_name] = array();
         }
+    }
+
+
+    /**
+     * Returns the installed package version.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function get_installed_version()
+    {
+        $db = $this->_ee->db;
+
+        $db_result = $db->select('module_version')
+            ->get_where('modules', array('module_name' => $this->get_package_name()), 1);
+
+        return $db_result->num_rows() === 1
+            ? $db_result->row()->module_version
+            : '';
     }
 
 
@@ -447,10 +466,11 @@ class Omnilog_model extends CI_Model {
      * Updates the module.
      *
      * @access  public
-     * @param   string        $installed_version        The installed version.
+     * @param   string      $installed_version      The installed version.
+     * @param   bool        $force                  Forcibly update the module version number?
      * @return  bool
      */
-    public function update_module($installed_version = '')
+    public function update_package($installed_version = '', $force = FALSE)
     {
         if (version_compare($installed_version, $this->get_package_version(), '>='))
         {
@@ -459,7 +479,17 @@ class Omnilog_model extends CI_Model {
 
         if (version_compare($installed_version, '1.1.0', '<'))
         {
-            $this->_update_module_to_version_110();
+            $this->_update_package_to_version_110();
+        }
+
+        // Forcibly update the module version number?
+        if ($force === TRUE)
+        {
+            $this->_ee->db->update(
+                'modules',
+                array('module_version' => $this->get_package_version()),
+                array('module_name' => $this->get_package_name())
+            );
         }
 
         return TRUE;
