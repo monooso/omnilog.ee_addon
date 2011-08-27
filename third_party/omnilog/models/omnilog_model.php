@@ -472,7 +472,8 @@ class Omnilog_model extends CI_Model {
      */
     public function update_package($installed_version = '', $force = FALSE)
     {
-        if (version_compare($installed_version, $this->get_package_version(), '>='))
+        if ( ! $installed_version
+            OR version_compare($installed_version, $this->get_package_version(), '>='))
         {
             return FALSE;
         }

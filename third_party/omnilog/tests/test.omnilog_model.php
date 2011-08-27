@@ -813,7 +813,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
     public function test__update_package__no_installed_version()
     {
         $installed_version = '';
-        $this->assertIdentical(TRUE, $this->_subject->update_package($installed_version));
+        $this->assertIdentical(FALSE, $this->_subject->update_package($installed_version));
     }
 
 
