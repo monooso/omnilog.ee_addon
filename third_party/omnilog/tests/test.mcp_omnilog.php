@@ -55,7 +55,6 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
         $this->_ee->lang->expectAtLeastOnce('line', array('hd_log'));
         $this->_ee->lang->setReturnValue('line', $page_title);
 
-        $this->_ee->config->expectOnce('item', array('webmaster_email'));
         $this->_ee->config->setReturnValue('item', $webmaster, array('webmaster_email'));
 
         $this->_model->expectOnce('get_log_entries');
