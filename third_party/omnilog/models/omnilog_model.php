@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.1.1
+ * @version         1.2.0
  */
 
 require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
@@ -74,7 +74,7 @@ class Omnilog_model extends CI_Model {
         $this->_ee              =& get_instance();
         $this->_namespace       = $namespace        ? strtolower($namespace)    : 'experience';
         $this->_package_name    = $package_name     ? strtolower($package_name) : 'omnilog';
-        $this->_package_version = $package_version  ? $package_version          : '1.1.1';
+        $this->_package_version = $package_version  ? $package_version          : '1.2.0';
 
         // Initialise the add-on cache.
         if ( ! array_key_exists($this->_namespace, $this->_ee->session->cache))
