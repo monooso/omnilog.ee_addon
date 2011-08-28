@@ -49,6 +49,14 @@
         vertical-align      : top;
     }
 
+    .experienceinternet .button {
+        white-space         : nowrap;
+    }
+
+    .experienceinternet .button:hover {
+        text-decoration     : none;
+    }
+
 } /* @media screen */
 
 
