@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.1.1
+ * @version         1.2.0
  */
 
 require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
@@ -74,7 +74,7 @@ class Omnilog_model extends CI_Model {
         $this->_ee              =& get_instance();
         $this->_namespace       = $namespace        ? strtolower($namespace)    : 'experience';
         $this->_package_name    = $package_name     ? strtolower($package_name) : 'omnilog';
-        $this->_package_version = $package_version  ? $package_version          : '1.1.1';
+        $this->_package_version = $package_version  ? $package_version          : '1.2.0';
 
         // Initialise the add-on cache.
         if ( ! array_key_exists($this->_namespace, $this->_ee->session->cache))
@@ -362,6 +362,10 @@ class Omnilog_model extends CI_Model {
             ? $lang->line('email_subject') .' (' .$site_name .')'
             : $lang->line('email_subject');
 
+        $admin_emails = ($admin_emails = $entry->get_admin_emails())
+            ? $admin_emails
+            : array($webmaster_email);
+
         $message = $lang->line('email_preamble') .NL .NL;
         $message .= $lang->line('email_addon_name') .NL .$entry->get_addon_name() .NL .NL;
         $message .= $lang->line('email_log_date') .NL .date('r', $entry->get_date()) .NL .NL;
@@ -372,7 +376,7 @@ class Omnilog_model extends CI_Model {
         $message = entities_to_ascii($message);
 
         $email->from($webmaster_email, $webmaster_name);
-        $email->to($webmaster_email);
+        $email->to($admin_emails);
         $email->subject($subject);
         $email->message($message);
 
@@ -472,7 +476,8 @@ class Omnilog_model extends CI_Model {
      */
     public function update_package($installed_version = '', $force = FALSE)
     {
-        if (version_compare($installed_version, $this->get_package_version(), '>='))
+        if ( ! $installed_version
+            OR version_compare($installed_version, $this->get_package_version(), '>='))
         {
             return FALSE;
         }

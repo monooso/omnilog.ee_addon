@@ -18,6 +18,36 @@ $lang = array(
 
 
 /* --------------------------------------------------------------
+ * DEMO
+ * ------------------------------------------------------------ */
+'demo_flashdata_failure'            => 'The demo failed due to an unknown error.',
+'demo_flashdata_missing_omnilogger' => 'The OmniLogger class could not be found.',
+'demo_flashdata_success'            => 'The demo was successful.',
+'demo_flashdata_unknown_demo'       => 'Unknown demo.',
+
+'demo_log_error'            => 'Send an "error" to OmniLog.',
+'demo_log_notice'           => 'Send a "notice" to OmniLog.',
+'demo_log_warning'          => 'Send a "warning" to OmniLog.',
+'demo_message'              => 'Demo message, sent by OmniLog.',
+'demo_notify_standard'      => 'Send an "error" to OmniLog, and email the site administrator (%s).',
+'demo_notify_custom'        => 'Send an "error" to OmniLog, and email custom recipients.',
+
+'hd_demo'                   => 'OmniLog Demo',
+
+'lbl_demo_email'            => 'Comma-separated list of email address(es)',
+'lbl_demo_run'              => 'Run',
+
+'thd_demo_title'            => 'Title',
+'thd_demo_description'      => 'Description',
+'thd_demo_custom_info'      => 'Custom Information',
+'thd_demo_log_notice'       => 'Log Notice',
+'thd_demo_log_warning'      => 'Log Warning',
+'thd_demo_log_error'        => 'Log Error',
+'thd_demo_notify_standard'  => 'Standard Notification',
+'thd_demo_notify_custom'    => 'Custom Notification',
+
+
+/* --------------------------------------------------------------
  * EMAIL
  * ------------------------------------------------------------ */
 'email_addon_name'          => 'Add-on Name:',
@@ -48,7 +78,7 @@ $lang = array(
 /* --------------------------------------------------------------
  * LOG
  * ------------------------------------------------------------ */
-'hd_log'            => 'Log',
+'hd_log'            => 'OmniLog',
 
 'lbl_no'            => 'No',
 'lbl_type_notice'   => 'Notice',
@@ -61,6 +91,14 @@ $lang = array(
 'thd_type'          => 'Entry Type',
 'thd_message'       => 'Message',
 'thd_notify_admin'  => 'Notify Admin?',
+
+
+/* --------------------------------------------------------------
+ * NAVIGATION
+ * ------------------------------------------------------------ */
+'nav_log'           => 'Log',
+'nav_demo'          => 'Demo',
+
 
 // All done.
 '' => ''
