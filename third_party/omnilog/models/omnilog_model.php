@@ -362,6 +362,10 @@ class Omnilog_model extends CI_Model {
             ? $lang->line('email_subject') .' (' .$site_name .')'
             : $lang->line('email_subject');
 
+        $admin_emails = ($admin_emails = $entry->get_admin_emails())
+            ? $admin_emails
+            : array($webmaster_email);
+
         $message = $lang->line('email_preamble') .NL .NL;
         $message .= $lang->line('email_addon_name') .NL .$entry->get_addon_name() .NL .NL;
         $message .= $lang->line('email_log_date') .NL .date('r', $entry->get_date()) .NL .NL;
@@ -372,7 +376,7 @@ class Omnilog_model extends CI_Model {
         $message = entities_to_ascii($message);
 
         $email->from($webmaster_email, $webmaster_name);
-        $email->to($webmaster_email);
+        $email->to($admin_emails);
         $email->subject($subject);
         $email->message($message);
 
