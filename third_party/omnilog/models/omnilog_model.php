@@ -323,6 +323,8 @@ class Omnilog_model extends CI_Model {
         $email  = $this->_ee->email;
         $lang   = $this->_ee->lang;
 
+        $lang->loadfile('omnilog');
+
         if ( ! $entry->is_populated())
         {
             throw new Exception($lang->line('exception__notify_admin__missing_data'));
