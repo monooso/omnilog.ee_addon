@@ -17,6 +17,16 @@
             $link.attr('href', $link.attr('href') + encodeURIComponent(email));
         });
 
+        $('.experienceinternet .extended_data_toggle').click(function(){
+
+        	$(this).siblings('.extended_data_hidden').toggle();
+        	
+        	$(this).children('span.view').toggle();  
+        	$(this).children('span.hide').toggle();  
+
+            return false;
+   		});
+
     });
 
 })(jQuery);

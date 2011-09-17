@@ -39,6 +39,7 @@ class Test_omnilogger extends Testee_unit_test_case {
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example log entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'notify_admin'  => FALSE,
             'type'          => Omnilog_entry::NOTICE
         );

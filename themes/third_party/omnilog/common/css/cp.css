@@ -57,6 +57,17 @@
         text-decoration     : none;
     }
 
+    /* --------------------------------------------------------------
+     * LOG TABLE
+     * ------------------------------------------------------------ */
+    #omnilog_accessory a.extended_data_toggle span.hide,
+    #omnilog_accessory span.extended_data_hidden,
+    .experienceinternet a.extended_data_toggle span.hide,
+    .experienceinternet span.extended_data_hidden {
+        display : none;
+    }
+
+
 } /* @media screen */
 
 

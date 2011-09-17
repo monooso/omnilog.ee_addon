@@ -102,7 +102,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
     {
         $db = $this->_ee->db;
 
-        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, extended_data, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
         $db->expectOnce('order_by', array('log_entry_id', 'desc'));
@@ -117,6 +117,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
                 'date'          => time() - 5000,
                 'log_entry_id'  => '10',
                 'message'       => 'Example message A-A',
+                'extended_data' => 'Example extended data A-A',
                 'notify_admin'  => 'n',
                 'type'          => Omnilog_entry::NOTICE
             ),
@@ -126,6 +127,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
                 'date'          => time() - 4000,
                 'log_entry_id'  => '20',
                 'message'       => 'Example message A-B',
+                'extended_data' => 'Example extended data A-B',
                 'notify_admin'  => 'y',
                 'type'          => Omnilog_entry::ERROR
             ),
@@ -135,6 +137,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
                 'date'          => time() - 3000,
                 'log_entry_id'  => '30',
                 'message'       => 'Example message B-A',
+                'extended_data' => 'Example extended data B-A',
                 'notify_admin'  => 'n',
                 'type'          => Omnilog_entry::WARNING
             )
@@ -170,7 +173,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db = $this->_ee->db;
         $site_id = 999;
 
-        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, extended_data, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $site_id)));
         $db->expectOnce('order_by', array('log_entry_id', 'desc'));
@@ -185,6 +188,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
                 'date'          => time() - 3000,
                 'log_entry_id'  => '10',
                 'message'       => 'Example message A-A',
+                'extended_data' => 'Example extended data A-A',
                 'notify_admin'  => 'n',
                 'type'          => Omnilog_entry::WARNING
             )
@@ -233,7 +237,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $db     = $this->_ee->db;
         $limit  = 10;
 
-        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type'));
+        $db->expectOnce('select', array('addon_name, admin_emails, date, log_entry_id, message, extended_data, notify_admin, type'));
         $db->expectOnce('from', array('omnilog_entries'));
         $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
         $db->expectOnce('order_by', array('log_entry_id', 'desc'));
@@ -312,6 +316,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
             ),
             'message' => array(
                 'type'              => 'TEXT'
+            ),
+            'extended_data' => array(
+                'type'              => 'TEXT'
             )
         );
     
@@ -347,6 +354,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::ERROR
         );
 
@@ -372,6 +380,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $log_cp_url         = $lang_cp_url .NL .$cp_url;
         $log_date           = $lang_log_date .NL .date('r', $entry_data['date']);
         $log_message        = $lang_log_message .NL .$entry_data['message'];
+        $log_extended_data  = $lang_log_extended_data .NL .$entry_data['extended_data'];
         $entry_type         = $lang_entry_type .NL .$lang_error;
 
         $message = $lang_preamble
@@ -380,6 +389,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             .$log_date .NL .NL
             .$entry_type .NL .NL
             .$log_message .NL .NL
+            .$log_extended_data .NL .NL
             .$log_cp_url .NL .NL
             .$lang_postscript;
 
@@ -405,6 +415,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $lang->setReturnValue('line', $lang_cp_url, array('email_cp_url'));
         $lang->setReturnValue('line', $lang_log_date, array('email_log_date'));
         $lang->setReturnValue('line', $lang_log_message, array('email_log_message'));
+        $lang->setReturnValue('line', $lang_log_extended_data, array('email_log_extended_data'));
         $lang->setReturnValue('line', $lang_entry_type, array('email_entry_type'));
         $lang->setReturnValue('line', $lang_error, array('email_entry_type_error'));
         $lang->setReturnValue('line', $lang_preamble, array('email_preamble'));
@@ -428,6 +439,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'admin_emails'  => array('adam@adamson.com', 'bob@bobson.com'),
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::ERROR
         );
 
@@ -453,6 +465,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $log_cp_url         = $lang_cp_url .NL .$cp_url;
         $log_date           = $lang_log_date .NL .date('r', $entry_data['date']);
         $log_message        = $lang_log_message .NL .$entry_data['message'];
+        $log_extended_data  = $lang_log_extended_data .NL .$entry_data['extended_data'];
         $entry_type         = $lang_entry_type .NL .$lang_error;
 
         $message = $lang_preamble
@@ -461,6 +474,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             .$log_date .NL .NL
             .$entry_type .NL .NL
             .$log_message .NL .NL
+            .$log_extended_data .NL .NL
             .$log_cp_url .NL .NL
             .$lang_postscript;
 
@@ -484,6 +498,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $lang->setReturnValue('line', $lang_cp_url, array('email_cp_url'));
         $lang->setReturnValue('line', $lang_log_date, array('email_log_date'));
         $lang->setReturnValue('line', $lang_log_message, array('email_log_message'));
+        $lang->setReturnValue('line', $lang_log_extended_data, array('email_log_extended_data'));
         $lang->setReturnValue('line', $lang_entry_type, array('email_entry_type'));
         $lang->setReturnValue('line', $lang_error, array('email_entry_type_error'));
         $lang->setReturnValue('line', $lang_preamble, array('email_preamble'));
@@ -502,6 +517,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::ERROR
         );
 
@@ -516,6 +532,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectOnce('to', array(array($webmaster_email)));
         $email->expectOnce('subject');
         $email->expectOnce('message');
+        $email->expectOnce('extended_data');
         $email->expectOnce('send');
         $email->setReturnValue('send', TRUE);
 
@@ -533,6 +550,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::ERROR
         );
 
@@ -551,6 +569,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectOnce('to', array(array($webmaster_email)));
         $email->expectOnce('subject', array($lang_subject));
         $email->expectOnce('message');
+        $email->expectOnce('extended_data');
         $email->expectOnce('send');
         $email->setReturnValue('send', TRUE);
         $lang->setReturnValue('line', $lang_subject, array('email_subject'));
@@ -568,6 +587,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $entry_data = array(
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::ERROR
         );
 
@@ -579,6 +599,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectNever('to');
         $email->expectNever('subject');
         $email->expectNever('message');
+        $email->expectNever('extended_data');
         $email->expectNever('send');
 
         $error_message = 'Error';
@@ -599,6 +620,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::ERROR
         );
 
@@ -615,6 +637,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectNever('to');
         $email->expectNever('subject');
         $email->expectNever('message');
+        $email->expectNever('extended_data');
         $email->expectNever('send');
 
         $error_message = 'Error';
@@ -635,6 +658,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::ERROR
         );
 
@@ -648,6 +672,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectOnce('to');
         $email->expectOnce('subject');
         $email->expectOnce('message');
+        $email->expectOnce('extended_data');
         $email->expectOnce('send');
         $email->setReturnValue('send', FALSE);
 
@@ -672,6 +697,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'admin_emails'  => array('adam@ants.com', 'bob@dylan.com'),
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'notify_admin'  => FALSE,
             'type'          => Omnilog_entry::NOTICE
         );
@@ -681,6 +707,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'admin_emails'  => 'adam@ants.com|bob@dylan.com',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'notify_admin'  => 'n',
             'type'          => Omnilog_entry::NOTICE,
             'site_id'       => $this->_site_id
@@ -716,6 +743,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'admin_emails'  => array('adam@ants.com', 'bob@dylan.com'),
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'notify_admin'  => TRUE,
             'type'          => Omnilog_entry::ERROR
         );
@@ -725,6 +753,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'admin_emails'  => 'adam@ants.com|bob@dylan.com',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'notify_admin'  => 'y',
             'type'          => Omnilog_entry::ERROR,
             'site_id'       => $this->_site_id
@@ -783,6 +812,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example OmniLog entry.',
+            'extended_data' => 'Example OmniLog extended data.',
             'type'          => Omnilog_entry::NOTICE
         );
 

@@ -101,6 +101,10 @@ class Omnilog_mcp {
 
         );
         
+        $this->_ee->load->library('javascript');
+        $this->_ee->cp->add_to_foot('<script type="text/javascript" src="'
+            .$this->_theme_url .'common/js/cp.js"></script>');
+
         return $this->_ee->load->view('log', $vars, TRUE);
     }
 
@@ -187,9 +191,12 @@ class Omnilog_mcp {
             'admin_emails'  => $emails,
             'date'          => time(),
             'message'       => $this->_ee->lang->line('demo_message'),
+            'extended_data' => $this->_ee->lang->line('demo_extended_data'),
             'notify_admin'  => $notify,
             'type'          => $type
         ));
+
+       // die('<pre> HERE '.print_R($omnilog_entry->to_array(),1));
 
         if ( ! Omnilogger::log($omnilog_entry))
         {
