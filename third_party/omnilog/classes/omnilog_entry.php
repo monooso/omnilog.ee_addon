@@ -22,6 +22,7 @@ class Omnilog_entry {
     private $_date;
     private $_log_entry_id;
     private $_message;
+    private $_extended_data;
     private $_notify_admin;
     private $_type;
     
@@ -145,6 +146,17 @@ class Omnilog_entry {
         return $this->_message;
     }
 
+    /**
+     * Returns the extended data.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function get_extended_data()
+    {
+        return $this->_extended_data;
+    }
+
 
     /**
      * Returns the entry type.
@@ -192,6 +204,7 @@ class Omnilog_entry {
         $this->_date            = 0;
         $this->_log_entry_id    = 0;
         $this->_message         = '';
+        $this->_extended_data   = '';
         $this->_notify_admin    = FALSE;
         $this->_type            = self::NOTICE;
 
@@ -309,6 +322,24 @@ class Omnilog_entry {
 
         return $this->get_message();
     }
+
+
+    /**
+     * Sets the extended data.
+     *
+     * @access  public
+     * @param   string        $extended_data  The extended data.
+     * @return  string
+     */
+    public function set_extended_data($extended_data)
+    {
+        if (is_string($extended_data))
+        {
+            $this->_extended_data = $extended_data;
+        }
+
+        return $this->get_extended_data();
+    }
     
     
     /**
@@ -343,6 +374,7 @@ class Omnilog_entry {
             'admin_emails'  => $this->get_admin_emails(),
             'date'          => $this->get_date(),
             'message'       => $this->get_message(),
+            'extended_data' => $this->get_extended_data(),
             'notify_admin'  => $this->get_notify_admin(),
             'type'          => $this->get_type()
         );

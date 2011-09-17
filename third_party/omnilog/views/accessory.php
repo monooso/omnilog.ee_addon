@@ -8,6 +8,7 @@
             <th><?php echo lang('thd_type'); ?></th>
             <th><?php echo lang('thd_notify_admin'); ?></th>
             <th><?php echo lang('thd_message'); ?></th>
+            <th style="width : 30%"><?php echo lang('thd_extended_data'); ?></th>
         </tr>
     </thead>
 
@@ -35,8 +36,30 @@
                 endif;
             ?></td>
             <td><?php echo nl2br($log_entry->get_message()); ?></td>
+            <td>    
+                <?php $extended_data = nl2br($log_entry->get_extended_data());
+                if( $extended_data != '' ) : ?>
+                    <a href="#" class="extended_data_toggle">
+                        <span class="view"><?=lang('td_view_extended')?>&#8230;</span> 
+                        <span class="hide"><?=lang('td_hide_extended')?></span>
+                    </a>
+                    <span class="extended_data_hidden"><br/><?=$extended_data?></span>                
+                <?php endif; ?>
+            </td>
         </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
+
+<script type="text/javascript">
+$('#omnilog_accessory .extended_data_toggle').click(function(){
+
+    $(this).siblings('.extended_data_hidden').toggle();
+    
+    $(this).children('span.view').toggle();  
+    $(this).children('span.hide').toggle();  
+
+    return false;
+});
+</script>
 </div><!-- /#omnilog_accessory -->
