@@ -65,8 +65,12 @@ class Omnilog_model extends CI_Model {
 
         $this->_ee->dbforge->add_column(
             'omnilog_entries',
-            array('extended_data' => array('type' => 'text'))
+            array('extended_data' => array('type' => 'TEXT'))
         );
+
+        // Add an index to the OmniLog entries table.
+        $this->_ee->db->query('CREATE INDEX key_addon_name
+          ON `exp_omnilog_entries` (`addon_name`)');
     }
 
 
@@ -306,6 +310,7 @@ class Omnilog_model extends CI_Model {
         ));
 
         $this->_ee->dbforge->add_key('log_entry_id', TRUE);
+        $this->_ee->dbforge->add_key('addon_name');
         $this->_ee->dbforge->create_table('omnilog_entries', TRUE);
     }
 

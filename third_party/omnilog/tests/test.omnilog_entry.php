@@ -36,7 +36,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
             'date'          => time() - 1000,
             'log_entry_id'  => 100,
             'message'       => 'Example log entry.',
-            'extended_data' => 'Example extended data.'
+            'extended_data' => 'Example extended data.',
             'notify_admin'  => TRUE,
             'type'          => Omnilog_entry::WARNING
         );
@@ -225,7 +225,9 @@ class Test_omnilog_entry extends Testee_unit_test_case {
     public function test__to_array__success_with_entry_id()
     {
         $result = $this->_subject->to_array(TRUE);
+
         ksort($result);
+        ksort($this->_props);
 
         $this->assertIdentical($this->_props, $result);
     }

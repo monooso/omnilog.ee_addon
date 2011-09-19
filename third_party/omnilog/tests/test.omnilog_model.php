@@ -323,7 +323,11 @@ class Test_omnilog_model extends Testee_unit_test_case {
         );
     
         $dbforge->expectOnce('add_field', array($fields));
-        $dbforge->expectOnce('add_key', array('log_entry_id', TRUE));
+
+        $dbforge->expectCallCount('add_key', 2);
+        $dbforge->expectAt(0, 'add_key', array('log_entry_id', TRUE));
+        $dbforge->expectAt(1, 'add_key', array('addon_name'));
+
         $dbforge->expectOnce('create_table', array('omnilog_entries', TRUE));
 
         $this->_subject->install_module_entries_table();
@@ -370,6 +374,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $lang_cp_url        = 'Control Panel URL:';
         $lang_log_date      = 'Date Logged:';
         $lang_log_message   = 'Log Message:';
+        $lang_log_extended  = 'Extended Data:';
         $lang_entry_type    = 'Severity:';
         $lang_error         = 'Error';
         $lang_preamble      = 'The bit before the details.';
@@ -380,7 +385,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $log_cp_url         = $lang_cp_url .NL .$cp_url;
         $log_date           = $lang_log_date .NL .date('r', $entry_data['date']);
         $log_message        = $lang_log_message .NL .$entry_data['message'];
-        $log_extended_data  = $lang_log_extended_data .NL .$entry_data['extended_data'];
+        $log_extended_data  = $lang_log_extended .NL .$entry_data['extended_data'];
         $entry_type         = $lang_entry_type .NL .$lang_error;
 
         $message = $lang_preamble
@@ -415,7 +420,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $lang->setReturnValue('line', $lang_cp_url, array('email_cp_url'));
         $lang->setReturnValue('line', $lang_log_date, array('email_log_date'));
         $lang->setReturnValue('line', $lang_log_message, array('email_log_message'));
-        $lang->setReturnValue('line', $lang_log_extended_data, array('email_log_extended_data'));
+        $lang->setReturnValue('line', $lang_log_extended, array('email_log_extended_data'));
         $lang->setReturnValue('line', $lang_entry_type, array('email_entry_type'));
         $lang->setReturnValue('line', $lang_error, array('email_entry_type_error'));
         $lang->setReturnValue('line', $lang_preamble, array('email_preamble'));
@@ -455,6 +460,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $lang_cp_url        = 'Control Panel URL:';
         $lang_log_date      = 'Date Logged:';
         $lang_log_message   = 'Log Message:';
+        $lang_log_extended  = 'Log Extended Data:';
         $lang_entry_type    = 'Severity:';
         $lang_error         = 'Error';
         $lang_preamble      = 'The bit before the details.';
@@ -465,7 +471,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $log_cp_url         = $lang_cp_url .NL .$cp_url;
         $log_date           = $lang_log_date .NL .date('r', $entry_data['date']);
         $log_message        = $lang_log_message .NL .$entry_data['message'];
-        $log_extended_data  = $lang_log_extended_data .NL .$entry_data['extended_data'];
+        $log_extended_data  = $lang_log_extended .NL .$entry_data['extended_data'];
         $entry_type         = $lang_entry_type .NL .$lang_error;
 
         $message = $lang_preamble
@@ -498,7 +504,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $lang->setReturnValue('line', $lang_cp_url, array('email_cp_url'));
         $lang->setReturnValue('line', $lang_log_date, array('email_log_date'));
         $lang->setReturnValue('line', $lang_log_message, array('email_log_message'));
-        $lang->setReturnValue('line', $lang_log_extended_data, array('email_log_extended_data'));
+        $lang->setReturnValue('line', $lang_log_extended, array('email_log_extended_data'));
         $lang->setReturnValue('line', $lang_entry_type, array('email_entry_type'));
         $lang->setReturnValue('line', $lang_error, array('email_entry_type_error'));
         $lang->setReturnValue('line', $lang_preamble, array('email_preamble'));
@@ -532,7 +538,6 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectOnce('to', array(array($webmaster_email)));
         $email->expectOnce('subject');
         $email->expectOnce('message');
-        $email->expectOnce('extended_data');
         $email->expectOnce('send');
         $email->setReturnValue('send', TRUE);
 
@@ -569,7 +574,6 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectOnce('to', array(array($webmaster_email)));
         $email->expectOnce('subject', array($lang_subject));
         $email->expectOnce('message');
-        $email->expectOnce('extended_data');
         $email->expectOnce('send');
         $email->setReturnValue('send', TRUE);
         $lang->setReturnValue('line', $lang_subject, array('email_subject'));
@@ -599,7 +603,6 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectNever('to');
         $email->expectNever('subject');
         $email->expectNever('message');
-        $email->expectNever('extended_data');
         $email->expectNever('send');
 
         $error_message = 'Error';
@@ -637,7 +640,6 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectNever('to');
         $email->expectNever('subject');
         $email->expectNever('message');
-        $email->expectNever('extended_data');
         $email->expectNever('send');
 
         $error_message = 'Error';
@@ -672,7 +674,6 @@ class Test_omnilog_model extends Testee_unit_test_case {
         $email->expectOnce('to');
         $email->expectOnce('subject');
         $email->expectOnce('message');
-        $email->expectOnce('extended_data');
         $email->expectOnce('send');
         $email->setReturnValue('send', FALSE);
 
@@ -937,7 +938,42 @@ class Test_omnilog_model extends Testee_unit_test_case {
             'admin_emails' => array('type' => 'MEDIUMTEXT')
         );
 
-        $this->_ee->dbforge->expectOnce('add_column', array('omnilog_entries', $column));
+        $this->_ee->dbforge->expectAtLeastOnce('add_column');
+
+        $this->_ee->dbforge->expectAt(0,
+          'add_column',
+          array('omnilog_entries', $column)
+        );
+
+        $this->assertIdentical(TRUE, $subject->update_package($installed_version));
+    }
+
+
+    public function test__update_package__update_to_version_122()
+    {
+        $installed_version  = '1.2.1';
+        $package_version    = '1.2.2';
+        $package_name       = 'example_package';
+        $subject            = new Omnilog_model($package_name, $package_version);
+
+        $column = array(
+          'extended_data' => array('type' => 'TEXT')
+        );
+
+        $this->_ee->dbforge->expectAtLeastOnce('add_column');
+
+        $this->_ee->dbforge->expectAt(0,
+          'add_column',
+          array('omnilog_entries', $column)
+        );
+
+        $sql = 'CREATE INDEX key_addon_name
+          ON `exp_omnilog_entries` (`addon_name`)';
+
+        $this->_ee->db->expectAtLeastOnce('query');
+        $this->_ee->db->expectAt(0, 'query', array(
+          new EqualWithoutWhitespaceExpectation($sql))
+        );
 
         $this->assertIdentical(TRUE, $subject->update_package($installed_version));
     }
