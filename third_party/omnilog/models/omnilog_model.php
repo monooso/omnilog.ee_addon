@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.2.1
+ * @version         1.2.2
  */
 
 require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
