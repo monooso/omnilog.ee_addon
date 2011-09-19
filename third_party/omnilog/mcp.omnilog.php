@@ -196,8 +196,6 @@ class Omnilog_mcp {
             'type'          => $type
         ));
 
-       // die('<pre> HERE '.print_R($omnilog_entry->to_array(),1));
-
         if ( ! Omnilogger::log($omnilog_entry))
         {
             $this->_ee->session->set_flashdata(
