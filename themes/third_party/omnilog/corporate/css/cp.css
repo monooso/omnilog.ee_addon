@@ -8,17 +8,17 @@
 
 @media screen {
 
-    /* --------------------------------------------------------------
-     * ACCESSORY
-     * ------------------------------------------------------------ */
-    #omnilog td {
-        border-bottom-color : rgb(206, 214, 220);
-    }
+  /* --------------------------------------------------------------
+   * ACCESSORY
+   * ------------------------------------------------------------ */
+  #omnilog td {
+    border-bottom-color : rgb(206, 214, 220);
+  }
 
-    #omnilog th {
-        border-bottom-color : rgb(177, 190, 200);
-        color               : rgb(0, 0, 0);
-    }
+  #omnilog th {
+    border-bottom-color : rgb(177, 190, 200);
+    color               : rgb(0, 0, 0);
+  }
 
 
 } /* @media screen */

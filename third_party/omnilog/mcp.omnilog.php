@@ -94,18 +94,26 @@ class Omnilog_mcp {
      */
     public function log()
     {
-        $vars = array(
-            'cp_page_title'     => $this->_ee->lang->line('hd_log'),
-            'log_entries'       => $this->_model->get_log_entries(),
-            'webmaster_email'   => $this->_ee->config->item('webmaster_email')
+      $vars = array(
+        'cp_page_title'     => $this->_ee->lang->line('hd_log'),
+        'log_entries'       => $this->_model->get_log_entries(),
+        'webmaster_email'   => $this->_ee->config->item('webmaster_email')
+      );
 
-        );
-        
-        $this->_ee->load->library('javascript');
-        $this->_ee->cp->add_to_foot('<script type="text/javascript" src="'
-            .$this->_theme_url .'common/js/cp.js"></script>');
+      // Language strings required by JS.
+      $this->_ee->load->library('javascript');
 
-        return $this->_ee->load->view('log', $vars, TRUE);
+      $this->_ee->javascript->set_global('omnilog.lang', array(
+        'lblShow' => $this->_ee->lang->line('lbl_show'),
+        'lblHide' => $this->_ee->lang->line('lbl_hide')
+      ));
+
+      $this->_ee->javascript->compile();
+      
+      $this->_ee->cp->add_to_foot('<script type="text/javascript" src="'
+          .$this->_theme_url .'common/js/cp.js"></script>');
+
+      return $this->_ee->load->view('log', $vars, TRUE);
     }
 
 

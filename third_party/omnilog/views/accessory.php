@@ -1,4 +1,4 @@
-<div id="omnilog_accessory">
+<div class="experienceinternet" id="omnilog_accessory">
 <table cellpadding="0" cellspacing="0">
     <thead>
         <tr>
@@ -36,30 +36,15 @@
                 endif;
             ?></td>
             <td><?php echo nl2br($log_entry->get_message()); ?></td>
-            <td>    
-                <?php $extended_data = nl2br($log_entry->get_extended_data());
-                if ($extended_data): ?>
-                    <a href="#" class="extended_data_toggle">
-                        <span class="view"><?php echo lang('lbl_show')?>&#8230;</span> 
-                        <span class="hide"><?php echo lang('lbl_hide')?></span>
-                    </a>
-                    <span class="extended_data_hidden"><br/><?php echo $extended_data?></span>
-                <?php endif; ?>
-            </td>
+            <?php $extended_data = nl2br($log_entry->get_extended_data());
+              if ( ! $extended_data): ?>
+            <td>&nbsp;</td>
+            <?php else: ?>
+            <td class="extended_data"><?php echo $extended_data; ?></td>
+            <?php endif; ?>
         </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
 
-<script type="text/javascript">
-$('#omnilog_accessory .extended_data_toggle').click(function(){
-
-    $(this).siblings('.extended_data_hidden').toggle();
-    
-    $(this).children('span.view').toggle();  
-    $(this).children('span.hide').toggle();  
-
-    return false;
-});
-</script>
 </div><!-- /#omnilog_accessory -->

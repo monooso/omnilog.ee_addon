@@ -29,7 +29,7 @@ $lang = array(
 'demo_log_notice'           => 'Send a "notice" to OmniLog.',
 'demo_log_warning'          => 'Send a "warning" to OmniLog.',
 'demo_message'              => 'Demo message, sent by OmniLog.',
-'demo_extended_data'        => 'Demo extended data, maybe a var dumo or similar.'
+'demo_extended_data'        => 'Demo extended data, maybe a var dump or similar.'
                                 .' Johny\'s in the basement'
                                 .' Mixing up the medicine'
                                 .' I\'m on the pavement'
