@@ -14,55 +14,57 @@ require_once PATH_THIRD .'omnilog/tests/mocks/mock.omnilog_model.php';
 
 class Test_omnilog_mcp extends Testee_unit_test_case {
     
-    private $_model;
-    private $_subject;
-    
-    
-    /* --------------------------------------------------------------
-     * PUBLIC METHODS
-     * ------------------------------------------------------------ */
-    
-    /**
-     * Constructor.
-     *
-     * @access  public
-     * @return  void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        
-        Mock::generate('Mock_omnilog_model', get_class($this) .'_mock_model');
-        $this->_ee->omnilog_model = $this->_get_mock('model');
-        $this->_model   = $this->_ee->omnilog_model;
-        $this->_subject = new Omnilog_mcp();
-    }
+  private $_model;
+  private $_subject;
+  
+  
+  /* --------------------------------------------------------------
+   * PUBLIC METHODS
+   * ------------------------------------------------------------ */
+  
+  /**
+   * Constructor.
+   *
+   * @access  public
+   * @return  void
+   */
+  public function setUp()
+  {
+      parent::setUp();
+      
+      Mock::generate('Mock_omnilog_model', get_class($this) .'_mock_model');
+      $this->_ee->omnilog_model = $this->_get_mock('model');
+      $this->_model   = $this->_ee->omnilog_model;
+      $this->_subject = new Omnilog_mcp();
+  }
 
 
-    public function test__log__success()
-    {
-        $log_entries = array('a', 'b', 'c');
-        $page_title = 'Example Page Title';
-        $webmaster  = 'webmaster@website.com';
+  public function test__log__success()
+  {
+    $log_entries = array('a', 'b', 'c');
+    $page_title = 'Example Page Title';
+    $webmaster  = 'webmaster@website.com';
 
-        $view       = 'log';
-        $view_vars  = array(
-            'cp_page_title'     => $page_title,
-            'log_entries'       => $log_entries,
-            'webmaster_email'   => $webmaster
-        );
+    $view       = 'log';
+    $view_vars  = array(
+      'cp_page_title'     => $page_title,
+      'log_entries'       => $log_entries,
+      'webmaster_email'   => $webmaster
+    );
 
-        $this->_ee->lang->expectAtLeastOnce('line', array('hd_log'));
-        $this->_ee->lang->setReturnValue('line', $page_title);
+    $this->_ee->lang->expectAtLeastOnce('line');
+    $this->_ee->lang->setReturnValue('line', $page_title, array('hd_log'));
 
-        $this->_ee->config->setReturnValue('item', $webmaster, array('webmaster_email'));
+    $this->_ee->config->setReturnValue('item',
+      $webmaster, array('webmaster_email'));
 
-        $this->_model->expectOnce('get_log_entries');
-        $this->_model->setReturnValue('get_log_entries', $log_entries);
+    $this->_model->expectOnce('get_log_entries');
+    $this->_model->setReturnValue('get_log_entries', $log_entries);
 
-        $this->_ee->load->expectOnce('view', array($view, $view_vars, TRUE));
-        $this->_subject->log();
-    }
+    $this->_ee->load->expectOnce('view', array($view, $view_vars, TRUE));
+    $this->_subject->log();
+  }
+
 
 }
 
