@@ -1,4 +1,4 @@
-<div id="omnilog_accessory">
+<div class="experienceinternet" id="omnilog_accessory">
 <table cellpadding="0" cellspacing="0">
     <thead>
         <tr>
@@ -8,6 +8,7 @@
             <th><?php echo lang('thd_type'); ?></th>
             <th><?php echo lang('thd_notify_admin'); ?></th>
             <th><?php echo lang('thd_message'); ?></th>
+            <th style="width : 30%"><?php echo lang('thd_extended_data'); ?></th>
         </tr>
     </thead>
 
@@ -35,8 +36,15 @@
                 endif;
             ?></td>
             <td><?php echo nl2br($log_entry->get_message()); ?></td>
+            <?php $extended_data = nl2br($log_entry->get_extended_data());
+              if ( ! $extended_data): ?>
+            <td>&nbsp;</td>
+            <?php else: ?>
+            <td class="extended_data"><?php echo $extended_data; ?></td>
+            <?php endif; ?>
         </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
+
 </div><!-- /#omnilog_accessory -->

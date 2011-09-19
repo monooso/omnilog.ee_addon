@@ -8,54 +8,64 @@
 
 @media screen {
 
-    /* --------------------------------------------------------------
-     * ACCESSORY
-     * ------------------------------------------------------------ */
-    #omnilog .accessorySection {
-        border              : none;
-        float               : none;
-        line-height         : 15px;
-        padding             : 0;
-        width               : 100%;
-    }
+  /* --------------------------------------------------------------
+   * ACCESSORY
+   * ------------------------------------------------------------ */
+  #omnilog .accessorySection {
+    border              : none;
+    float               : none;
+    line-height         : 15px;
+    padding             : 0;
+    width               : 100%;
+  }
 
-    #omnilog h5 {
-        display             : none;
-    }
+  #omnilog h5 {
+    display             : none;
+  }
 
-    #omnilog table {
-        width               : 100%;
-    }
+  #omnilog table {
+    width               : 100%;
+  }
 
-    #omnilog td,
-    #omnilog th {
-        border-bottom       : 1px solid rgb(153, 153, 153);
-        padding             : 10px;
-        text-align          : left;
-        vertical-align      : top;
-    }
+  #omnilog td,
+  #omnilog th {
+    border-bottom       : 1px solid rgb(153, 153, 153);
+    padding             : 10px;
+    text-align          : left;
+    vertical-align      : top;
+  }
 
-    #omnilog th {
-        font-weight         : bold;
-    }
+  #omnilog th {
+    font-weight         : bold;
+  }
 
 
-    /* --------------------------------------------------------------
-     * MODULE
-     * ------------------------------------------------------------ */
-    .experienceinternet td,
-    .experienceinternet th {
-        line-height         : 16px;
-        vertical-align      : top;
-    }
+  /* --------------------------------------------------------------
+   * MODULE
+   * ------------------------------------------------------------ */
+  .experienceinternet td,
+  .experienceinternet th {
+    line-height         : 16px;
+    vertical-align      : top;
+  }
 
-    .experienceinternet .button {
-        white-space         : nowrap;
-    }
+  .experienceinternet .button {
+    white-space         : nowrap;
+  }
 
-    .experienceinternet .button:hover {
-        text-decoration     : none;
-    }
+  .experienceinternet .button:hover {
+    text-decoration     : none;
+  }
+
+
+  /* --------------------------------------------------------------
+   * LOG TABLE
+   * ------------------------------------------------------------ */
+  .extended_data_body {
+    display             : block;
+    margin-bottom       : 5px;
+  }
+
 
 } /* @media screen */
 

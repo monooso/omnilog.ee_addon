@@ -36,6 +36,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
             'date'          => time() - 1000,
             'log_entry_id'  => 100,
             'message'       => 'Example log entry.',
+            'extended_data' => 'Example extended data.',
             'notify_admin'  => TRUE,
             'type'          => Omnilog_entry::WARNING
         );
@@ -128,7 +129,8 @@ class Test_omnilog_entry extends Testee_unit_test_case {
         $this->assertIdentical(array(), $result->get_admin_emails());
         $this->assertIdentical(0, $result->get_date());
         $this->assertIdentical(0, $result->get_log_entry_id());
-        $this->assertIdentical('', $result->get_message());
+        $this->assertIdentical('', $result->get_message());        
+        $this->assertIdentical('', $result->get_extended_data());
         $this->assertIdentical(FALSE, $result->get_notify_admin());
         $this->assertIdentical(Omnilog_entry::NOTICE, $result->get_type());
     }
@@ -185,6 +187,15 @@ class Test_omnilog_entry extends Testee_unit_test_case {
     }
 
 
+    public function test__set_extended_data__invalid_values()
+    {
+        $this->assertIdentical($this->_props['extended_data'], $this->_subject->set_extended_data(123));
+        $this->assertIdentical($this->_props['extended_data'], $this->_subject->set_extended_data(FALSE));
+        $this->assertIdentical($this->_props['extended_data'], $this->_subject->set_extended_data(new StdClass()));
+        $this->assertIdentical($this->_props['extended_data'], $this->_subject->set_extended_data(NULL));
+    }
+
+
     public function test__set_notify_admin__invalid_values()
     {
         $this->assertIdentical($this->_props['notify_admin'], $this->_subject->set_notify_admin(123));
@@ -214,7 +225,9 @@ class Test_omnilog_entry extends Testee_unit_test_case {
     public function test__to_array__success_with_entry_id()
     {
         $result = $this->_subject->to_array(TRUE);
+
         ksort($result);
+        ksort($this->_props);
 
         $this->assertIdentical($this->_props, $result);
     }

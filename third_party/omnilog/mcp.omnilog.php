@@ -94,14 +94,26 @@ class Omnilog_mcp {
      */
     public function log()
     {
-        $vars = array(
-            'cp_page_title'     => $this->_ee->lang->line('hd_log'),
-            'log_entries'       => $this->_model->get_log_entries(),
-            'webmaster_email'   => $this->_ee->config->item('webmaster_email')
+      $vars = array(
+        'cp_page_title'     => $this->_ee->lang->line('hd_log'),
+        'log_entries'       => $this->_model->get_log_entries(),
+        'webmaster_email'   => $this->_ee->config->item('webmaster_email')
+      );
 
-        );
-        
-        return $this->_ee->load->view('log', $vars, TRUE);
+      // Language strings required by JS.
+      $this->_ee->load->library('javascript');
+
+      $this->_ee->javascript->set_global('omnilog.lang', array(
+        'lblShow' => $this->_ee->lang->line('lbl_show'),
+        'lblHide' => $this->_ee->lang->line('lbl_hide')
+      ));
+
+      $this->_ee->javascript->compile();
+      
+      $this->_ee->cp->add_to_foot('<script type="text/javascript" src="'
+          .$this->_theme_url .'common/js/cp.js"></script>');
+
+      return $this->_ee->load->view('log', $vars, TRUE);
     }
 
 
@@ -187,6 +199,7 @@ class Omnilog_mcp {
             'admin_emails'  => $emails,
             'date'          => time(),
             'message'       => $this->_ee->lang->line('demo_message'),
+            'extended_data' => $this->_ee->lang->line('demo_extended_data'),
             'notify_admin'  => $notify,
             'type'          => $type
         ));

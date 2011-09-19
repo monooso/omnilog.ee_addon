@@ -14,8 +14,8 @@ $lang = array(
  * REQUIRED
  * ------------------------------------------------------------ */
 'omnilog_module_name'        => 'OmniLog',
-'omnilog_module_description' => 'Installation-wide message log, which any add-on can use to log notices, warnings, and errors.',
-
+'omnilog_module_description' => 'Installation-wide message log, which any add-on'
+                                .' may use to log notices, warnings, and errors.',
 
 /* --------------------------------------------------------------
  * DEMO
@@ -29,13 +29,39 @@ $lang = array(
 'demo_log_notice'           => 'Send a "notice" to OmniLog.',
 'demo_log_warning'          => 'Send a "warning" to OmniLog.',
 'demo_message'              => 'Demo message, sent by OmniLog.',
-'demo_notify_standard'      => 'Send an "error" to OmniLog, and email the site administrator (%s).',
-'demo_notify_custom'        => 'Send an "error" to OmniLog, and email custom recipients.',
+'demo_extended_data'        => 'Demo extended data, maybe a var dump or similar.'
+                                .' Johny\'s in the basement'
+                                .' Mixing up the medicine'
+                                .' I\'m on the pavement'
+                                .' Thinking about the government'
+                                .' The man in the trench coat'
+                                .' Badge out, laid off'
+                                .' Says he\'s got a bad cough'
+                                .' Wants to get it paid off'
+                                .' Look out kid'
+                                .' It\'s somethin\' you did'
+                                .' God knows when'
+                                .' But you\'re doin\' it again'
+                                .' You better duck down the alley way'
+                                .' Lookin\' for a new friend'
+                                .' The man in the coon-skip cap'
+                                .' In the big pen'
+                                .' Wants eleven dollar bills'
+                                .' You only got ten.',
+
+'demo_notify_standard'      => 'Send an "error" to OmniLog, and email the site'
+                                .' administrator (%s).',
+
+'demo_notify_custom'        => 'Send an "error" to OmniLog, and email custom'
+                                .' recipients.',
 
 'hd_demo'                   => 'OmniLog Demo',
 
 'lbl_demo_email'            => 'Comma-separated list of email address(es)',
 'lbl_demo_run'              => 'Run',
+
+'lbl_show'                  => 'Show',
+'lbl_hide'                  => 'Hide',
 
 'thd_demo_title'            => 'Title',
 'thd_demo_description'      => 'Description',
@@ -58,21 +84,32 @@ $lang = array(
 'email_entry_type_warning'  => 'Warning',
 'email_log_date'            => 'Log Entry Date:',
 'email_log_message'         => 'Log Message:',
+'email_log_extended_data'   => 'Log Extended Data:',
 'email_postscript'          => '--- END OF MESSAGE ---',
-'email_preamble'            => 'OmniLog was instructed to notify the site administrator of the following log entry.',
+'email_preamble'            => 'OmniLog was instructed to notify the site'
+                                .' administrator of the following log entry.',
 'email_subject'             => 'OmniLog Entry Notification',
 
 
 /* --------------------------------------------------------------
  * EXCEPTIONS
  * ------------------------------------------------------------ */
-'exception__notify_admin__email_not_sent'           => 'Unable to send administrator email.',
-'exception__notify_admin__invalid_webmaster_email'  => 'Unable to send admin email due to invalid webmaster email address.',
-'exception__notify_admin__missing_data'             => 'Unable to send admin email due to missing or invalid data.',
+'exception__notify_admin__email_not_sent' => 'Unable to send administrator email.',
 
-'exception__save_entry__missing_data'   => 'Unable to save entry to log due to missing or invalid data.',
-'exception__save_entry__not_installed'  => 'The OmniLog module does not appear to be installed.',
-'exception__save_entry__not_saved'      => 'A database error occurred whilst attempting to save the log entry.',
+'exception__notify_admin__invalid_webmaster_email' => 'Unable to send admin'
+  .' email due to invalid webmaster email address.',
+
+'exception__notify_admin__missing_data' => 'Unable to send admin email due to'
+  .' missing or invalid data.',
+
+'exception__save_entry__missing_data' => 'Unable to save entry to log due to'
+  .' missing or invalid data.',
+
+'exception__save_entry__not_installed' => 'The OmniLog module does not appear'
+  .' to be installed.',
+
+'exception__save_entry__not_saved' => 'A database error occurred whilst'
+  .' attempting to save the log entry.',
 
 
 /* --------------------------------------------------------------
@@ -90,6 +127,7 @@ $lang = array(
 'thd_date'          => 'Date',
 'thd_type'          => 'Entry Type',
 'thd_message'       => 'Message',
+'thd_extended_data'	=> 'Extended Data',
 'thd_notify_admin'  => 'Notify Admin?',
 
 
@@ -104,6 +142,7 @@ $lang = array(
 '' => ''
 
 );
+
 
 /* End of file      : lang.omnilog.php */
 /* File location    : third_party/omnilog/language/english/lang.omnilog.php */
