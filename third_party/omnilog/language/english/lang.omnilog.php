@@ -29,6 +29,7 @@ $lang = array(
 'demo_log_notice'           => 'Send a "notice" to OmniLog.',
 'demo_log_warning'          => 'Send a "warning" to OmniLog.',
 'demo_message'              => 'Demo message, sent by OmniLog.',
+'demo_extended_data'        => 'Demo extended data, maybe a var dump or similar, sent by Omnilog Demo extended data, maybe a var dump or similar, sent by Omnilog Demo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by OmnilogDemo extended data, maybe a var dump or similar, sent by Omnilog.',
 'demo_notify_standard'      => 'Send an "error" to OmniLog, and email the site administrator (%s).',
 'demo_notify_custom'        => 'Send an "error" to OmniLog, and email custom recipients.',
 
@@ -45,6 +46,9 @@ $lang = array(
 'thd_demo_log_error'        => 'Log Error',
 'thd_demo_notify_standard'  => 'Standard Notification',
 'thd_demo_notify_custom'    => 'Custom Notification',
+
+'td_view_extended'			=> 'Show',
+'td_hide_extended'			=> 'Hide',
 
 
 /* --------------------------------------------------------------
@@ -90,6 +94,7 @@ $lang = array(
 'thd_date'          => 'Date',
 'thd_type'          => 'Entry Type',
 'thd_message'       => 'Message',
+'thd_extended_data'	=> 'Extended Data',
 'thd_notify_admin'  => 'Notify Admin?',
 
 

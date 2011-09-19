@@ -53,6 +53,22 @@ class Omnilog_model extends CI_Model {
         );
     }
 
+    /**
+     * Performs the necessary updates when upgrading to v1.2.2.
+     *
+     * @access  private
+     * @return  void
+     */
+    private function _update_package_to_version_122()
+    {
+        $this->_ee->load->dbforge();
+
+        $this->_ee->dbforge->add_column(
+            'omnilog_entries',
+            array('extended_data' => array('type' => 'text'))
+        );
+    }
+
 
     /* --------------------------------------------------------------
      * PUBLIC METHODS
@@ -74,7 +90,7 @@ class Omnilog_model extends CI_Model {
         $this->_ee              =& get_instance();
         $this->_namespace       = $namespace        ? strtolower($namespace)    : 'experience';
         $this->_package_name    = $package_name     ? strtolower($package_name) : 'omnilog';
-        $this->_package_version = $package_version  ? $package_version          : '1.2.1';
+        $this->_package_version = $package_version  ? $package_version          : '1.2.2';
 
         // Initialise the add-on cache.
         if ( ! array_key_exists($this->_namespace, $this->_ee->session->cache))
@@ -125,7 +141,7 @@ class Omnilog_model extends CI_Model {
         }
 
         $db = $this->_ee->db;
-        $db->select('addon_name, admin_emails, date, log_entry_id, message, notify_admin, type')
+        $db->select('addon_name, admin_emails, date, log_entry_id, message, extended_data, notify_admin, type')
             ->from('omnilog_entries')
             ->where(array('site_id' => $site_id))
             ->order_by('log_entry_id', 'desc');
@@ -283,6 +299,9 @@ class Omnilog_model extends CI_Model {
             ),
             'message' => array(
                 'type'              => 'TEXT'
+            ),
+            'extended_data' => array(
+                'type'              => 'TEXT'
             )
         ));
 
@@ -373,6 +392,7 @@ class Omnilog_model extends CI_Model {
         $message .= $lang->line('email_log_date') .NL .date('r', $entry->get_date()) .NL .NL;
         $message .= $lang->line('email_entry_type') .NL .$lang_entry_type .NL .NL;
         $message .= $lang->line('email_log_message') .NL .$entry->get_message() .NL .NL;
+        $message .= $lang->line('email_log_extended_data') .NL .$entry->get_extended_data() .NL .NL;
         $message .= $lang->line('email_cp_url') .NL .$this->_ee->config->item('cp_url') .NL .NL;
         $message .= $lang->line('email_postscript');
         $message = entities_to_ascii($message);
@@ -487,6 +507,11 @@ class Omnilog_model extends CI_Model {
         if (version_compare($installed_version, '1.1.0', '<'))
         {
             $this->_update_package_to_version_110();
+        }
+
+        if (version_compare($installed_version, '1.2.2', '<'))
+        {
+            $this->_update_package_to_version_122();
         }
 
         // Forcibly update the module version number?
