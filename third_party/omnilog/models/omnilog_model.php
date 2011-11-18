@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.2.2
+ * @version         1.3.0
  */
 
 require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
@@ -14,6 +14,7 @@ require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
 class Omnilog_model extends CI_Model {
 
   private $_ee;
+  private $_log_limit;
   private $_namespace;
   private $_package_name;
   private $_package_version;
@@ -106,7 +107,9 @@ class Omnilog_model extends CI_Model {
     
     $this->_package_version = $package_version
       ? $package_version
-      : '1.2.2';
+      : '1.3.0';
+
+    $this->_log_limit = 50;
 
     // Initialise the add-on cache.
     if ( ! array_key_exists($this->_namespace, $this->_ee->session->cache))
@@ -122,6 +125,19 @@ class Omnilog_model extends CI_Model {
       $this->_ee->session->cache[$this->_namespace][$this->_package_name]
         = array();
     }
+  }
+
+
+  /**
+   * Returns the default log 'limit'. That is, the number of log entries
+   * returned when calling the get_log_entries method.
+   *
+   * @access  public
+   * @return  int
+   */
+  public function get_default_log_limit()
+  {
+    return $this->_log_limit;
   }
 
 
@@ -150,35 +166,54 @@ class Omnilog_model extends CI_Model {
 
 
   /**
+   * Returns the total number of log entries for the specified site.
+   *
+   * @access  public
+   * @param   int|string    $site_id    The site ID. Defaults is current site.
+   * @return  int
+   */
+  public function get_log_entries_count($site_id = NULL)
+  {
+    $site_id = valid_int($site_id, 1)
+      ? (int) $site_id : $this->_ee->config->item('site_id');
+
+    return $this->_ee->db
+      ->where(array('site_id' => $site_id))
+      ->count_all_results('omnilog_entries');
+  }
+
+
+  /**
    * Returns the log entries. By default, only the log entries for
    * the current site are returned.
    *
    * @access  public
    * @param   int|string    $site_id    Restrict to the specified site ID.
    * @param   int           $limit      Maximum number of entries to retrieve.
+   * @param   int           $offset     The number of entries to skip.
    * @return  array
    */
-  public function get_log_entries($site_id = NULL, $limit = NULL)
+  public function get_log_entries($site_id = NULL, $limit = NULL,
+    $offset = NULL
+  )
   {
-    if ( ! valid_int($site_id, 1))
-    {
-      $site_id = $this->_ee->config->item('site_id');
-    }
+    // Ensure we have valid arguments.
+    $site_id = valid_int($site_id, 1)
+      ? (int) $site_id : $this->_ee->config->item('site_id');
+
+    $limit = valid_int($limit, 1)
+      ? (int) $limit : $this->get_default_log_limit();
+
+    $offset = valid_int($offset, 0) ? (int) $offset : 0;
 
     $db = $this->_ee->db;
-    $db
+    $db_result = $db
       ->select('addon_name, admin_emails, date, log_entry_id, message,
         extended_data, notify_admin, type')
-      ->from('omnilog_entries')
       ->where(array('site_id' => $site_id))
-      ->order_by('log_entry_id', 'desc');
+      ->order_by('log_entry_id', 'desc')
+      ->get('omnilog_entries', $limit, $offset);
 
-    if (valid_int($limit, 1))
-    {
-      $db->limit($limit);
-    }
-
-    $db_result = $db->get();
     $entries = array();
 
     foreach ($db_result->result_array() AS $db_row)
