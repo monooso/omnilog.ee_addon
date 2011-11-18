@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.2.2
+ * @version         1.3.0
  */
 
 require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
@@ -107,7 +107,7 @@ class Omnilog_model extends CI_Model {
     
     $this->_package_version = $package_version
       ? $package_version
-      : '1.2.2';
+      : '1.3.0';
 
     $this->_log_limit = 50;
 
