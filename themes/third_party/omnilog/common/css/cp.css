@@ -57,6 +57,31 @@
     text-decoration     : none;
   }
 
+  .experienceinternet .pagination{
+    border-radius       : 2px;
+    box-shadow          : inset 0 0 1px rgba(0, 0, 0, 0.15);
+    background          : rgba(0, 0, 0, 0.1);
+    display             : block;
+    text-align          : right;
+  }
+
+  .experienceinternet .pagination li {
+    border-left         : 1px dotted rgba(255, 255, 255, 0.5);
+    display             : inline-block;
+  }
+
+  .experienceinternet .pagination a,
+  .experienceinternet .pagination b {
+    display             : inline-block;
+    padding             : 10px 20px;
+  }
+
+  .experienceinternet .pagination b {
+    color               : rgba(0, 0, 0, 0.3);
+    font-weight         : normal;
+    text-shadow         : 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
 
   /* --------------------------------------------------------------
    * LOG TABLE

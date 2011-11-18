@@ -100,7 +100,8 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_log_entries__success_default_site_id()
   {
-    $db = $this->_ee->db;
+    $db     = $this->_ee->db;
+    $limit  = $this->_subject->get_default_log_limit();
 
     $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
       extended_data, notify_admin, type';
@@ -110,7 +111,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
-    $db->expectOnce('get', array('omnilog_entries', 100, 0));
+    $db->expectOnce('get', array('omnilog_entries', $limit, 0));
 
     $db_result = $this->_get_mock('db_query');
     $db_rows    = array(
@@ -173,8 +174,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_log_entries__success_custom_site_id()
   {
-    $db = $this->_ee->db;
-    $site_id = 999;
+    $db       = $this->_ee->db;
+    $site_id  = 999;
+    $limit    = $this->_subject->get_default_log_limit();
 
     $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
       extended_data, notify_admin, type';
@@ -184,7 +186,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     $db->expectOnce('where', array(array('site_id' => $site_id)));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
-    $db->expectOnce('get', array('omnilog_entries', 100, 0));
+    $db->expectOnce('get', array('omnilog_entries', $limit, 0));
 
     $db_result = $this->_get_mock('db_query');
     $db_rows = array(
@@ -265,6 +267,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
   public function test__get_log_entries__works_with_custom_offset()
   {
     $db     = $this->_ee->db;
+    $limit  = $this->_subject->get_default_log_limit();
     $offset = 100;
 
     $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
@@ -275,7 +278,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
-    $db->expectOnce('get', array('omnilog_entries', 100, $offset));
+    $db->expectOnce('get', array('omnilog_entries', $limit, $offset));
 
     $db_result = $this->_get_mock('db_query');
     $db->setReturnReference('get', $db_result);

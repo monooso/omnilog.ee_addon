@@ -101,9 +101,27 @@ class Omnilog_mcp {
    */
   public function log()
   {
+    $log_count  = $this->_model->get_log_entries_count();
+    $log_limit  = $this->_model->get_default_log_limit();
+
+    $log_start  = valid_int($this->_ee->input->get('start'), 0)
+      ? (int) $this->_ee->input->get('start') : 0;
+
+    $log_entries = $this->_model->get_log_entries(NULL, $log_limit, $log_start);
+
+    $next_url = ($log_start + $log_limit) < $log_count
+      ? $this->_base_url .AMP .'start=' .($log_start + $log_limit)
+      : '';
+
+    $previous_url = $log_start > 0
+      ? $this->_base_url .AMP .'start=' .(max(($log_start - $log_limit), 0))
+      : '';
+
     $vars = array(
       'cp_page_title'   => $this->_ee->lang->line('hd_log'),
-      'log_entries'     => $this->_model->get_log_entries(),
+      'log_entries'     => $log_entries,
+      'next_url'        => $next_url,
+      'previous_url'    => $previous_url,
       'webmaster_email' => $this->_ee->config->item('webmaster_email')
     );
 

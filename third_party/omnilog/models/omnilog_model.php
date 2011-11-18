@@ -14,6 +14,7 @@ require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
 class Omnilog_model extends CI_Model {
 
   private $_ee;
+  private $_log_limit;
   private $_namespace;
   private $_package_name;
   private $_package_version;
@@ -108,6 +109,8 @@ class Omnilog_model extends CI_Model {
       ? $package_version
       : '1.2.2';
 
+    $this->_log_limit = 50;
+
     // Initialise the add-on cache.
     if ( ! array_key_exists($this->_namespace, $this->_ee->session->cache))
     {
@@ -122,6 +125,19 @@ class Omnilog_model extends CI_Model {
       $this->_ee->session->cache[$this->_namespace][$this->_package_name]
         = array();
     }
+  }
+
+
+  /**
+   * Returns the default log 'limit'. That is, the number of log entries
+   * returned when calling the get_log_entries method.
+   *
+   * @access  public
+   * @return  int
+   */
+  public function get_default_log_limit()
+  {
+    return $this->_log_limit;
   }
 
 
@@ -150,6 +166,24 @@ class Omnilog_model extends CI_Model {
 
 
   /**
+   * Returns the total number of log entries for the specified site.
+   *
+   * @access  public
+   * @param   int|string    $site_id    The site ID. Defaults is current site.
+   * @return  int
+   */
+  public function get_log_entries_count($site_id = NULL)
+  {
+    $site_id = valid_int($site_id, 1)
+      ? (int) $site_id : $this->_ee->config->item('site_id');
+
+    return $this->_ee->db
+      ->where(array('site_id' => $site_id))
+      ->count_all_results('omnilog_entries');
+  }
+
+
+  /**
    * Returns the log entries. By default, only the log entries for
    * the current site are returned.
    *
@@ -167,7 +201,9 @@ class Omnilog_model extends CI_Model {
     $site_id = valid_int($site_id, 1)
       ? (int) $site_id : $this->_ee->config->item('site_id');
 
-    $limit  = valid_int($limit, 1) ? (int) $limit : 100;
+    $limit = valid_int($limit, 1)
+      ? (int) $limit : $this->get_default_log_limit();
+
     $offset = valid_int($offset, 0) ? (int) $offset : 0;
 
     $db = $this->_ee->db;
