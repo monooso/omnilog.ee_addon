@@ -108,11 +108,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $db->expectOnce('select',
       array(new EqualWithoutWhitespaceExpectation($select_fields)));
 
-    $db->expectOnce('from', array('omnilog_entries'));
     $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
-    $db->expectOnce('get');
-    $db->expectNever('limit');
+    $db->expectOnce('get', array('omnilog_entries', 100, 0));
 
     $db_result = $this->_get_mock('db_query');
     $db_rows    = array(
@@ -184,11 +182,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $db->expectOnce('select',
       array(new EqualWithoutWhitespaceExpectation($select_fields)));
 
-    $db->expectOnce('from', array('omnilog_entries'));
     $db->expectOnce('where', array(array('site_id' => $site_id)));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
-    $db->expectOnce('get');
-    $db->expectNever('limit');
+    $db->expectOnce('get', array('omnilog_entries', 100, 0));
 
     $db_result = $this->_get_mock('db_query');
     $db_rows = array(
@@ -253,17 +249,40 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $db->expectOnce('select',
       array(new EqualWithoutWhitespaceExpectation($select_fields)));
 
-    $db->expectOnce('from', array('omnilog_entries'));
     $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
-    $db->expectOnce('limit', array($limit));
-    $db->expectOnce('get');
+    $db->expectOnce('get', array('omnilog_entries', $limit, 0));
 
     $db_result = $this->_get_mock('db_query');
     $db->setReturnReference('get', $db_result);
     $db_result->setReturnValue('result_array', array());
 
-    $this->assertIdentical(array(), $this->_subject->get_log_entries(NULL, $limit));
+    $this->assertIdentical(array(),
+      $this->_subject->get_log_entries(NULL, $limit));
+  }
+
+
+  public function test__get_log_entries__works_with_custom_offset()
+  {
+    $db     = $this->_ee->db;
+    $offset = 100;
+
+    $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
+      extended_data, notify_admin, type';
+
+    $db->expectOnce('select',
+      array(new EqualWithoutWhitespaceExpectation($select_fields)));
+
+    $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+    $db->expectOnce('order_by', array('log_entry_id', 'desc'));
+    $db->expectOnce('get', array('omnilog_entries', 100, $offset));
+
+    $db_result = $this->_get_mock('db_query');
+    $db->setReturnReference('get', $db_result);
+    $db_result->setReturnValue('result_array', array());
+
+    $this->assertIdentical(array(),
+      $this->_subject->get_log_entries(NULL, NULL, $offset));
   }
 
 
