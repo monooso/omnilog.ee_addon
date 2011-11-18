@@ -32,7 +32,9 @@ class Omnilog_mcp {
     $this->_ee->load->model('omnilog_model');
     $this->_model = $this->_ee->omnilog_model;
 
-    $this->_base_qs     = 'C=addons_modules' .AMP .'M=show_module_cp' .AMP .'module=omnilog';
+    $this->_base_qs = 'C=addons_modules' .AMP .'M=show_module_cp'
+      .AMP .'module=omnilog';
+
     $this->_base_url    = BASE .AMP .$this->_base_qs;
     $this->_theme_url   = $this->_model->get_package_theme_url();
 
@@ -41,10 +43,15 @@ class Omnilog_mcp {
       ? $this->_theme_url .'corporate/css/cp.css'
       : $this->_theme_url .'default/css/cp.css';
 
-    $this->_ee->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' .$common_css .'" />');
-    $this->_ee->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' .$theme_css .'" />');
+    $this->_ee->cp->add_to_head('<link rel="stylesheet" href="'
+      .$common_css .'" />');
 
-    $this->_ee->cp->set_breadcrumb($this->_base_url, $this->_ee->lang->line('omnilog_module_name'));
+    $this->_ee->cp->add_to_head('<link rel="stylesheet" href="'
+      .$theme_css .'" />');
+
+    $this->_ee->cp->set_breadcrumb($this->_base_url,
+      $this->_ee->lang->line('omnilog_module_name'));
+
     $this->_ee->cp->set_right_nav(array(
       'nav_log'   => $this->_base_url .AMP .'method=log',
       'nav_demo'  => $this->_base_url .AMP .'method=demo'
@@ -61,13 +68,13 @@ class Omnilog_mcp {
   public function demo()
   {
     $this->_ee->load->library('javascript');
-    $this->_ee->cp->add_to_foot('<script type="text/javascript" src="'
+    $this->_ee->cp->add_to_foot('<script src="'
       .$this->_theme_url .'common/js/cp.js"></script>');
 
     $vars = array(
-      'cp_page_title'     => $this->_ee->lang->line('hd_demo'),
-      'run_demo_url'      => $this->_base_url .AMP .'method=run_demo',
-      'webmaster_email'   => $this->_ee->config->item('webmaster_email')
+      'cp_page_title'   => $this->_ee->lang->line('hd_demo'),
+      'run_demo_url'    => $this->_base_url .AMP .'method=run_demo',
+      'webmaster_email' => $this->_ee->config->item('webmaster_email')
     );
     
     return $this->_ee->load->view('demo', $vars, TRUE);
@@ -95,9 +102,9 @@ class Omnilog_mcp {
   public function log()
   {
     $vars = array(
-      'cp_page_title'     => $this->_ee->lang->line('hd_log'),
-      'log_entries'       => $this->_model->get_log_entries(),
-      'webmaster_email'   => $this->_ee->config->item('webmaster_email')
+      'cp_page_title'   => $this->_ee->lang->line('hd_log'),
+      'log_entries'     => $this->_model->get_log_entries(),
+      'webmaster_email' => $this->_ee->config->item('webmaster_email')
     );
 
     // Language strings required by JS.
@@ -111,7 +118,7 @@ class Omnilog_mcp {
     $this->_ee->javascript->compile();
     
     $this->_ee->cp->add_to_foot('<script type="text/javascript" src="'
-        .$this->_theme_url .'common/js/cp.js"></script>');
+      .$this->_theme_url .'common/js/cp.js"></script>');
 
     return $this->_ee->load->view('log', $vars, TRUE);
   }
