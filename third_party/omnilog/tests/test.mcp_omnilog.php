@@ -30,13 +30,13 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
    */
   public function setUp()
   {
-      parent::setUp();
+    parent::setUp();
 
-      Mock::generate('Omnilog_model', get_class($this) .'_mock_model');
+    Mock::generate('Omnilog_model', get_class($this) .'_mock_model');
 
-      $this->EE->omnilog_model = $this->_get_mock('model');
-      $this->_model   = $this->EE->omnilog_model;
-      $this->_subject = new Omnilog_mcp();
+    $this->EE->omnilog_model = $this->_get_mock('model');
+    $this->_model   = $this->EE->omnilog_model;
+    $this->_subject = new Omnilog_mcp();
   }
 
 
