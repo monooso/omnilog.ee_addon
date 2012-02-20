@@ -13,11 +13,11 @@ require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
 require_once dirname(__FILE__) .'/../models/omnilog_model.php';
 
 class Test_omnilog_mcp extends Testee_unit_test_case {
-    
+
   private $_model;
   private $_subject;
-  
-  
+
+
   /* --------------------------------------------------------------
    * PUBLIC METHODS
    * ------------------------------------------------------------ */
@@ -31,10 +31,11 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
   public function setUp()
   {
       parent::setUp();
-      
-      Mock::generate('Mock_omnilog_model', get_class($this) .'_mock_model');
-      $this->_ee->omnilog_model = $this->_get_mock('model');
-      $this->_model   = $this->_ee->omnilog_model;
+
+      Mock::generate('Omnilog_model', get_class($this) .'_mock_model');
+
+      $this->EE->omnilog_model = $this->_get_mock('model');
+      $this->_model   = $this->EE->omnilog_model;
       $this->_subject = new Omnilog_mcp();
   }
 
@@ -46,8 +47,8 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
     $page_title   = 'Example Page Title';
     $webmaster    = 'webmaster@website.com';
 
-    $this->_ee->input->expectOnce('get', array('start'));
-    $this->_ee->input->setReturnValue('get', FALSE, array('start'));
+    $this->EE->input->expectOnce('get', array('start'));
+    $this->EE->input->setReturnValue('get', FALSE, array('start'));
 
     $this->_model->expectOnce('get_default_log_limit');
     $this->_model->setReturnValue('get_default_log_limit', $log_limit);
@@ -68,16 +69,16 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
       'webmaster_email'   => $webmaster
     );
 
-    $this->_ee->lang->expectAtLeastOnce('line');
-    $this->_ee->lang->setReturnValue('line', $page_title, array('hd_log'));
+    $this->EE->lang->expectAtLeastOnce('line');
+    $this->EE->lang->setReturnValue('line', $page_title, array('hd_log'));
 
-    $this->_ee->config->setReturnValue('item',
+    $this->EE->config->setReturnValue('item',
       $webmaster, array('webmaster_email'));
 
     $this->_model->expectOnce('get_log_entries');
     $this->_model->setReturnValue('get_log_entries', $log_entries);
 
-    $this->_ee->load->expectOnce('view', array($view, $view_vars, TRUE));
+    $this->EE->load->expectOnce('view', array($view, $view_vars, TRUE));
     $this->_subject->log();
   }
 
@@ -90,8 +91,8 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
     $page_title   = 'Example Page Title';
     $webmaster    = 'webmaster@website.com';
 
-    $this->_ee->input->expectAtLeastOnce('get', array('start'));
-    $this->_ee->input->setReturnValue('get', $log_start, array('start'));
+    $this->EE->input->expectAtLeastOnce('get', array('start'));
+    $this->EE->input->setReturnValue('get', $log_start, array('start'));
 
     $this->_model->expectOnce('get_default_log_limit');
     $this->_model->setReturnValue('get_default_log_limit', $log_limit);
@@ -112,16 +113,16 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
       'webmaster_email'   => $webmaster
     );
 
-    $this->_ee->lang->expectAtLeastOnce('line');
-    $this->_ee->lang->setReturnValue('line', $page_title, array('hd_log'));
+    $this->EE->lang->expectAtLeastOnce('line');
+    $this->EE->lang->setReturnValue('line', $page_title, array('hd_log'));
 
-    $this->_ee->config->setReturnValue('item',
+    $this->EE->config->setReturnValue('item',
       $webmaster, array('webmaster_email'));
 
     $this->_model->expectOnce('get_log_entries');
     $this->_model->setReturnValue('get_log_entries', $log_entries);
 
-    $this->_ee->load->expectOnce('view', array($view, $view_vars, TRUE));
+    $this->EE->load->expectOnce('view', array($view, $view_vars, TRUE));
     $this->_subject->log();
   }
 
@@ -134,8 +135,8 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
     $page_title   = 'Example Page Title';
     $webmaster    = 'webmaster@website.com';
 
-    $this->_ee->input->expectAtLeastOnce('get', array('start'));
-    $this->_ee->input->setReturnValue('get', $log_start, array('start'));
+    $this->EE->input->expectAtLeastOnce('get', array('start'));
+    $this->EE->input->setReturnValue('get', $log_start, array('start'));
 
     $this->_model->expectOnce('get_default_log_limit');
     $this->_model->setReturnValue('get_default_log_limit', $log_limit);
@@ -160,16 +161,16 @@ class Test_omnilog_mcp extends Testee_unit_test_case {
       'webmaster_email'   => $webmaster
     );
 
-    $this->_ee->lang->expectAtLeastOnce('line');
-    $this->_ee->lang->setReturnValue('line', $page_title, array('hd_log'));
+    $this->EE->lang->expectAtLeastOnce('line');
+    $this->EE->lang->setReturnValue('line', $page_title, array('hd_log'));
 
-    $this->_ee->config->setReturnValue('item',
+    $this->EE->config->setReturnValue('item',
       $webmaster, array('webmaster_email'));
 
     $this->_model->expectOnce('get_log_entries');
     $this->_model->setReturnValue('get_log_entries', $log_entries);
 
-    $this->_ee->load->expectOnce('view', array($view, $view_vars, TRUE));
+    $this->EE->load->expectOnce('view', array($view, $view_vars, TRUE));
     $this->_subject->log();
   }
 
