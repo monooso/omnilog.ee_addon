@@ -8,8 +8,8 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/tests/mocks/mock.omnilog_model' .EXT;
-require_once PATH_THIRD .'omnilog/classes/omnilogger' .EXT;
+require_once PATH_THIRD .'omnilog/tests/mocks/mock.omnilog_model.php';
+require_once PATH_THIRD .'omnilog/classes/omnilogger.php';
 
 class Test_omnilogger extends Testee_unit_test_case {
 
@@ -33,9 +33,9 @@ class Test_omnilogger extends Testee_unit_test_case {
         parent::setUp();
 
         Mock::generate('Mock_omnilog_model', get_class($this) .'_mock_model');
-        $this->_ee->omnilog_model   = $this->_get_mock('model');
-        $this->_model               = $this->_ee->omnilog_model;
-        $this->_log_entry_props     = array(
+        $this->EE->omnilog_model  = $this->_get_mock('model');
+        $this->_model             = $this->EE->omnilog_model;
+        $this->_log_entry_props   = array(
             'addon_name'    => 'Example Add-on',
             'date'          => time() - 100,
             'message'       => 'Example log entry.',
@@ -50,7 +50,9 @@ class Test_omnilogger extends Testee_unit_test_case {
     {
         $log_entry = new Omnilog_entry($this->_log_entry_props);
 
-        $saved_entry_props = array_merge($this->_log_entry_props, array('log_entry_id' => 10));
+        $saved_entry_props = array_merge($this->_log_entry_props,
+          array('log_entry_id' => 10));
+
         $saved_entry = new Omnilog_entry($saved_entry_props);
 
         /**
@@ -85,7 +87,8 @@ class Test_omnilogger extends Testee_unit_test_case {
         $this->_model->expectOnce('save_entry_to_log', array('*'));
         $this->_model->expectNever('notify_site_admin_of_log_entry');
 
-        $this->_model->throwOn('save_entry_to_log', new Exception($exception_message));
+        $this->_model->throwOn('save_entry_to_log',
+          new Exception($exception_message));
 
         $this->assertIdentical(FALSE, Omnilogger::log($log_entry));
     }
@@ -96,14 +99,18 @@ class Test_omnilogger extends Testee_unit_test_case {
         $log_entry = new Omnilog_entry($this->_log_entry_props);
         $log_entry->set_notify_admin(TRUE);
 
-        $saved_entry_props = array_merge($log_entry->to_array(), array('log_entry_id' => 10));
+        $saved_entry_props = array_merge($log_entry->to_array(),
+          array('log_entry_id' => 10));
+
         $saved_entry = new Omnilog_entry($saved_entry_props);
 
         // $this->_model->expectOnce('save_entry_to_log', array($log_entry));
         $this->_model->expectOnce('save_entry_to_log', array('*'));
         $this->_model->setReturnValue('save_entry_to_log', $saved_entry);
 
-        // $this->_model->expectOnce('notify_site_admin_of_log_entry', array($saved_entry));
+        // $this->_model->expectOnce('notify_site_admin_of_log_entry',
+        //  array($saved_entry));
+
         $this->_model->expectOnce('notify_site_admin_of_log_entry', array('*'));
 
         $this->assertIdentical(TRUE, Omnilogger::log($log_entry));
@@ -119,7 +126,8 @@ class Test_omnilogger extends Testee_unit_test_case {
         // $this->_model->expectOnce('save_entry_to_log', array($log_entry));
         $this->_model->expectOnce('save_entry_to_log', array('*'));
         $this->_model->expectNever('notify_site_admin_of_log_entry');
-        $this->_model->throwOn('save_entry_to_log', new Exception($exception_message));
+        $this->_model->throwOn('save_entry_to_log',
+          new Exception($exception_message));
 
         $this->assertIdentical(FALSE, Omnilogger::log($log_entry));
     }
@@ -131,16 +139,21 @@ class Test_omnilogger extends Testee_unit_test_case {
         $log_entry = new Omnilog_entry($this->_log_entry_props);
         $log_entry->set_notify_admin(TRUE);
 
-        $saved_entry_props = array_merge($log_entry->to_array(), array('log_entry_id' => 10));
+        $saved_entry_props = array_merge($log_entry->to_array(),
+          array('log_entry_id' => 10));
+
         $saved_entry = new Omnilog_entry($saved_entry_props);
 
         // $this->_model->expectOnce('save_entry_to_log', array($log_entry));
         $this->_model->expectOnce('save_entry_to_log', array('*'));
         $this->_model->setReturnValue('save_entry_to_log', $saved_entry);
 
-        // $this->_model->expectOnce('notify_site_admin_of_log_entry', array($saved_entry));
+        // $this->_model->expectOnce('notify_site_admin_of_log_entry',
+        //  array($saved_entry));
+
         $this->_model->expectOnce('notify_site_admin_of_log_entry', array('*'));
-        $this->_model->throwOn('notify_site_admin_of_log_entry', new Exception($exception_message));
+        $this->_model->throwOn('notify_site_admin_of_log_entry',
+          new Exception($exception_message));
 
         $this->assertIdentical(FALSE, Omnilogger::log($log_entry));
     }
