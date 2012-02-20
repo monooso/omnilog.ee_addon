@@ -10,7 +10,7 @@
 
 require_once dirname(__FILE__) .'/../mcp.omnilog.php';
 require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
-require_once dirname(__FILE__) .'/../tests/mocks/mock.omnilog_model.php';
+require_once dirname(__FILE__) .'/../models/omnilog_model.php';
 
 class Test_omnilog_mcp extends Testee_unit_test_case {
     
