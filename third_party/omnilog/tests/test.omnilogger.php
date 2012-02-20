@@ -8,8 +8,8 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/classes/omnilogger.php';
-require_once PATH_THIRD .'omnilog/models/omnilog_model.php';
+require_once dirname(__FILE__) .'/../classes/omnilogger.php';
+require_once dirname(__FILE__) .'/../models/omnilog_model.php';
 
 class Test_omnilogger extends Testee_unit_test_case {
 
