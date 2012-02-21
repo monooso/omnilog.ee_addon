@@ -1,4 +1,4 @@
-<?php if ( ! defined('EXT')) exit('Invalid file request.');
+<?php if ( ! defined('BASEPATH')) exit('Invalid file request.');
 
 /**
  * OmniLog model.
@@ -9,7 +9,7 @@
  * @version         1.3.0
  */
 
-require_once PATH_THIRD .'omnilog/classes/omnilog_entry' .EXT;
+require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
 
 class Omnilog_model extends CI_Model {
 
