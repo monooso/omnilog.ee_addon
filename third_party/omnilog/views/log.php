@@ -1,4 +1,32 @@
 <div class="experienceinternet">
+<div id="filterMenu">
+  <fieldset>
+    <legend>Filter Entries</legend>
+
+    <?php echo form_open($form_action); ?>
+      <div class="group">
+        <select name="addon_id" id="addon_id">
+          <option value="null">Filter by Add-on</option>
+          <option value="all">All</option>
+          <option value="2">Products</option>
+          <option value="1">Zoo Visitor Members</option>
+        </select>
+
+        <select name="entry_type" id="entry_type">
+          <option value="null">Filter by Entry Type</option>
+          <option value="null">All</option>
+
+          <?php foreach ($entry_types AS $id => $label): ?>
+          <option value="<?php echo $id; ?>"><?php echo $label; ?></option>
+          <?php endforeach; ?>
+        </select>
+
+        <input type="submit" name="submit" value="Filter" class="submit">
+      </div>
+    <?php echo form_close(); ?>
+  </fieldset>
+</div>
+
 <table class="mainTable padTable" cellpadding="0" cellspacing="0">
   <thead>
     <tr>

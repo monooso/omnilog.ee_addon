@@ -101,6 +101,8 @@ class Omnilog_mcp {
    */
   public function log()
   {
+    $this->EE->load->helper('form');
+
     $log_count  = $this->_model->get_log_entries_count();
     $log_limit  = $this->_model->get_default_log_limit();
 
@@ -117,8 +119,18 @@ class Omnilog_mcp {
       ? $this->_base_url .AMP .'start=' .(max(($log_start - $log_limit), 0))
       : '';
 
+    $entry_types = array(
+      'error'   => 'Error',
+      'notice'  => 'Notice',
+      'warning' => 'Warning'
+    );
+
+    $filter_form_action = $this->_base_url .AMP .'start=' .$log_start;
+
     $vars = array(
       'cp_page_title'   => $this->EE->lang->line('hd_log'),
+      'entry_types'     => $entry_types,
+      'form_action'     => $filter_form_action,
       'log_entries'     => $log_entries,
       'next_url'        => $next_url,
       'previous_url'    => $previous_url,
