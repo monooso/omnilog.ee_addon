@@ -9,8 +9,8 @@
  */
 
 class Omnilog {
-    
-    private $_ee;
+
+    private $EE;
     private $_model;
     public $return_data = '';
     
@@ -27,9 +27,9 @@ class Omnilog {
      */
     public function __construct()
     {
-        $this->_ee =& get_instance();
-        $this->_ee->load->model('omnilog_model');
-        $this->_model = $this->_ee->omnilog_model;
+        $this->EE =& get_instance();
+        $this->EE->load->model('omnilog_model');
+        $this->_model = $this->EE->omnilog_model;
     }
 
 
