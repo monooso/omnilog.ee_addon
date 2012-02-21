@@ -24,7 +24,7 @@ class Omnilog_model extends CI_Model {
   /* --------------------------------------------------------------
    * PRIVATE METHODS
    * ------------------------------------------------------------ */
-  
+
   /**
    * Returns a references to the package cache. Should be called
    * as follows: $cache =& $this->_get_package_cache();
@@ -78,7 +78,7 @@ class Omnilog_model extends CI_Model {
   /* --------------------------------------------------------------
    * PUBLIC METHODS
    * ------------------------------------------------------------ */
-  
+
   /**
    * Constructor.
    *
@@ -100,11 +100,11 @@ class Omnilog_model extends CI_Model {
     $this->_namespace = $namespace
       ? strtolower($namespace)
       : 'experience';
-    
+
     $this->_package_name = $package_name
       ? strtolower($package_name)
       : 'omnilog';
-    
+
     $this->_package_version = $package_version
       ? $package_version
       : '1.3.0';
@@ -481,7 +481,8 @@ class Omnilog_model extends CI_Model {
 
     if ($email->send() !== TRUE)
     {
-      throw new Exception($lang->line('exception__notify_admin__email_not_sent'));
+      throw new Exception(
+        $lang->line('exception__notify_admin__email_not_sent'));
     }
   }
 
@@ -579,8 +580,9 @@ class Omnilog_model extends CI_Model {
    */
   public function update_package($installed_version = '', $force = FALSE)
   {
-    if ( ! $installed_version
-        OR version_compare($installed_version, $this->get_package_version(), '>='))
+    if ( ! $installed_version OR version_compare(
+      $installed_version, $this->get_package_version(), '>=')
+    )
     {
       return FALSE;
     }
