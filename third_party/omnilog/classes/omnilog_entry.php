@@ -16,7 +16,7 @@ class Omnilog_entry {
   const WARNING   = 'warning';
   const ERROR     = 'error';
 
-  private $_ee;
+  private $EE;
   private $_addon_name;
   private $_admin_emails;
   private $_date;
@@ -25,7 +25,7 @@ class Omnilog_entry {
   private $_extended_data;
   private $_notify_admin;
   private $_type;
-  
+
 
   /* --------------------------------------------------------------
    * PUBLIC METHODS
@@ -40,8 +40,8 @@ class Omnilog_entry {
    */
   public function __construct(Array $props = array())
   {
-    $this->_ee =& get_instance();
-    $this->_ee->load->library('email');
+    $this->EE =& get_instance();
+    $this->EE->load->library('email');
 
     $this->reset();
 
@@ -66,7 +66,7 @@ class Omnilog_entry {
    */
   public function add_admin_email($email)
   {
-    if ($this->_ee->email->valid_email($email))
+    if ($this->EE->email->valid_email($email))
     {
       $this->_admin_emails[] = $email;
     }
@@ -268,8 +268,8 @@ class Omnilog_entry {
 
     return $this->get_date();
   }
-  
-  
+
+
   /**
    * Sets the log entry ID.
    *
@@ -304,8 +304,8 @@ class Omnilog_entry {
 
     return $this->get_notify_admin();
   }
-  
-  
+
+
   /**
    * Sets the message.
    *
@@ -340,8 +340,8 @@ class Omnilog_entry {
 
     return $this->get_extended_data();
   }
-  
-  
+
+
   /**
    * Sets the entry type.
    *
@@ -358,8 +358,8 @@ class Omnilog_entry {
 
     return $this->get_type();
   }
-  
-  
+
+
   /**
    * Returns the instance as an associative array.
    *
