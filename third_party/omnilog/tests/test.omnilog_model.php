@@ -1,4 +1,4 @@
-<?php if ( ! defined('EXT')) exit('Invalid file request.');
+<?php if ( ! defined('BASEPATH')) exit('Invalid file request.');
 
 /**
  * OmniLog model tests.
@@ -8,11 +8,11 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/models/omnilog_model' .EXT;
+require_once PATH_THIRD .'omnilog/models/omnilog_model.php';
 
 // Helpers (not mocked).
-require_once BASEPATH .'helpers/text_helper' .EXT;
-require_once APPPATH .'helpers/EE_text_helper' .EXT;
+require_once BASEPATH .'helpers/text_helper.php';
+require_once APPPATH .'helpers/EE_text_helper.php';
 
 class Test_omnilog_model extends Testee_unit_test_case {
 
