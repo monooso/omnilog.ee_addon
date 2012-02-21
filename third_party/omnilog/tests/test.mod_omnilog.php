@@ -13,30 +13,30 @@ require_once dirname(__FILE__) .'/../models/omnilog_model.php';
 
 class Test_omnilog extends Testee_unit_test_case {
 
-    private $_model;
-    private $_subject;
+  private $_model;
+  private $_subject;
 
 
-    /* --------------------------------------------------------------
-     * PUBLIC METHODS
-     * ------------------------------------------------------------ */
+  /* --------------------------------------------------------------
+   * PUBLIC METHODS
+   * ------------------------------------------------------------ */
 
-    /**
-     * Constructor.
-     *
-     * @access  public
-     * @return  void
-     */
-    public function setUp()
-    {
-        parent::setUp();
+  /**
+   * Constructor.
+   *
+   * @access  public
+   * @return  void
+   */
+  public function setUp()
+  {
+    parent::setUp();
 
-        Mock::generate('Omnilog_model', get_class($this) .'_mock_model');
+    Mock::generate('Omnilog_model', get_class($this) .'_mock_model');
 
-        $this->EE->omnilog_model = $this->_get_mock('model');
-        $this->_model   = $this->EE->omnilog_model;
-        $this->_subject = new Omnilog();
-    }
+    $this->EE->omnilog_model = $this->_get_mock('model');
+    $this->_model   = $this->EE->omnilog_model;
+    $this->_subject = new Omnilog();
+  }
 
 
 }
