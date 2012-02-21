@@ -41,7 +41,7 @@ class Test_omnilog_entry extends Testee_unit_test_case {
       'type'          => Omnilog_entry::WARNING
     );
 
-    $this->_ee->email->setReturnValue('valid_email', TRUE);
+    $this->EE->email->setReturnValue('valid_email', TRUE);
     $this->_subject = new Omnilog_entry($this->_props);
   }
 
@@ -153,8 +153,8 @@ class Test_omnilog_entry extends Testee_unit_test_case {
     $invalid_email  = 'bob';
     $valid_email    = 'bob@bob.com';
 
-    $this->_ee->email->setReturnValueAt(2, 'valid_email', FALSE);
-    $this->_ee->email->setReturnValueAt(3, 'valid_email', TRUE);
+    $this->EE->email->setReturnValueAt(2, 'valid_email', FALSE);
+    $this->EE->email->setReturnValueAt(3, 'valid_email', TRUE);
 
     $this->assertIdentical(array($valid_email),
       $this->_subject->set_admin_emails(array($invalid_email, $valid_email)));
