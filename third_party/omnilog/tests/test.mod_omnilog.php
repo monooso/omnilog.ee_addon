@@ -3,13 +3,13 @@
 /**
  * OmniLog module tests.
  *
- * @author          Stephen Lewis <stephen@experienceinternet.co.uk>
- * @copyright       Experience Internet
- * @package         Omnilog
+ * @author        Stephen Lewis <stephen@experienceinternet.co.uk>
+ * @copyright     Experience Internet
+ * @package       Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/mcp.omnilog.php';
-require_once PATH_THIRD .'omnilog/tests/mocks/mock.omnilog_model.php';
+require_once dirname(__FILE__) .'/../mcp.omnilog.php';
+require_once dirname(__FILE__) .'/../models/omnilog_model.php';
 
 class Test_omnilog extends Testee_unit_test_case {
 
