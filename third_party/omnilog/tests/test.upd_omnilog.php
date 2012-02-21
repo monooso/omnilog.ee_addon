@@ -8,9 +8,9 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/upd.omnilog.php';
-require_once PATH_THIRD .'omnilog/classes/omnilog_entry.php';
-require_once PATH_THIRD .'omnilog/tests/mocks/mock.omnilog_model.php';
+require_once dirname(__FILE__) .'/../upd.omnilog.php';
+require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
+require_once dirname(__FILE__) .'/../models/omnilog_model.php';
 
 class Test_omnilog_upd extends Testee_unit_test_case {
 
@@ -32,7 +32,8 @@ class Test_omnilog_upd extends Testee_unit_test_case {
   {
     parent::setUp();
 
-    Mock::generate('Mock_omnilog_model', get_class($this) .'_mock_model');
+    Mock::generate('Omnilog_model', get_class($this) .'_mock_model');
+
     $this->_ee->omnilog_model = $this->_get_mock('model');
     $this->_model   = $this->_ee->omnilog_model;
     $this->_subject = new Omnilog_upd();
