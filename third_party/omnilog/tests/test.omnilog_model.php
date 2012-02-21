@@ -40,7 +40,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
       $this->_package_version = '1.0.0';
 
       $this->_site_id = 10;
-      $this->_ee->config->setReturnValue('item', $this->_site_id, array('site_id'));
+      $this->EE->config->setReturnValue('item', $this->_site_id, array('site_id'));
 
       $this->_subject = new Omnilog_model($this->_package_name, $this->_package_version);
   }
@@ -59,7 +59,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_installed_version__success()
   {
-      $db         = $this->_ee->db;
+      $db         = $this->EE->db;
       $version    = '1.0.0';
       $db_result  = $this->_get_mock('db_query');
       $db_row     = new StdClass();
@@ -83,7 +83,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_installed_version__not_installed()
   {
-      $db         = $this->_ee->db;
+      $db         = $this->EE->db;
       $db_result  = $this->_get_mock('db_query');
 
       $db->expectOnce('select', array('module_version'));
@@ -100,7 +100,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_log_entries__success_default_site_id()
   {
-    $db     = $this->_ee->db;
+    $db     = $this->EE->db;
     $limit  = $this->_subject->get_default_log_limit();
 
     $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
@@ -174,7 +174,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_log_entries__success_custom_site_id()
   {
-    $db       = $this->_ee->db;
+    $db       = $this->EE->db;
     $site_id  = 999;
     $limit    = $this->_subject->get_default_log_limit();
 
@@ -229,7 +229,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_log_entries__no_entries()
   {
-    $db = $this->_ee->db;
+    $db = $this->EE->db;
     $db_result = $this->_get_mock('db_query');
 
     $db->setReturnReference('get', $db_result);
@@ -242,7 +242,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_log_entries__success_with_limit()
   {
-    $db     = $this->_ee->db;
+    $db     = $this->EE->db;
     $limit  = 10;
 
     $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
@@ -266,7 +266,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_log_entries__works_with_custom_offset()
   {
-    $db     = $this->_ee->db;
+    $db     = $this->EE->db;
     $limit  = $this->_subject->get_default_log_limit();
     $offset = 100;
 
@@ -291,7 +291,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__get_site_id__success()
   {
-    $this->_ee->config->expectOnce('item', array('site_id'));
+    $this->EE->config->expectOnce('item', array('site_id'));
     $this->assertIdentical(intval($this->_site_id), $this->_subject->get_site_id());
   }
 
@@ -303,11 +303,11 @@ class Test_omnilog_model extends Testee_unit_test_case {
       );
 
       $query_count = count($query_data);
-      $this->_ee->db->expectCallCount('insert', $query_count);
+      $this->EE->db->expectCallCount('insert', $query_count);
 
       for ($count = 0; $count < $query_count; $count++)
       {
-          $this->_ee->db->expectAt($count, 'insert', array('actions', $query_data[$count]));
+          $this->EE->db->expectAt($count, 'insert', array('actions', $query_data[$count]));
       }
 
       $this->_subject->install_module_actions();
@@ -316,7 +316,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__install_module_entries_table__success()
   {
-      $dbforge = $this->_ee->dbforge;
+      $dbforge = $this->EE->dbforge;
 
       $fields = array(
           'log_entry_id' => array(
@@ -380,16 +380,16 @@ class Test_omnilog_model extends Testee_unit_test_case {
           'module_version'        => $this->_package_version
       );
 
-      $this->_ee->db->expectOnce('insert', array('modules', $query_data));
+      $this->EE->db->expectOnce('insert', array('modules', $query_data));
       $this->_subject->install_module_register();
   }
 
 
   public function test__notify_site_admin_of_log_entry__success()
   {
-      $config = $this->_ee->config;
-      $email  = $this->_ee->email;
-      $lang   = $this->_ee->lang;
+      $config = $this->EE->config;
+      $email  = $this->EE->email;
+      $lang   = $this->EE->lang;
 
       $entry_data = array(
           'addon_name'    => 'Example Add-on',
@@ -469,9 +469,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__notify_site_admin_of_log_entry__custom_email_success()
   {
-      $config = $this->_ee->config;
-      $email  = $this->_ee->email;
-      $lang   = $this->_ee->lang;
+      $config = $this->EE->config;
+      $email  = $this->EE->email;
+      $lang   = $this->EE->lang;
 
       // Must be set before we create the Omnilog_entry.
       $email->setReturnValue('valid_email', TRUE);
@@ -553,8 +553,8 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__notify_site_admin_of_log_entry__success_no_webmaster_name()
   {
-      $config = $this->_ee->config;
-      $email  = $this->_ee->email;
+      $config = $this->EE->config;
+      $email  = $this->EE->email;
 
       $entry_data = array(
           'addon_name'    => 'Example Add-on',
@@ -584,9 +584,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__notify_site_admin_of_log_entry__success_no_site_name()
   {
-      $config = $this->_ee->config;
-      $email  = $this->_ee->email;
-      $lang   = $this->_ee->lang;
+      $config = $this->EE->config;
+      $email  = $this->EE->email;
+      $lang   = $this->EE->lang;
 
       $entry_data = array(
           'addon_name'    => 'Example Add-on',
@@ -621,9 +621,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__notify_site_admin_of_log_entry__missing_log_data()
   {
-      $config = $this->_ee->config;
-      $email  = $this->_ee->email;
-      $lang   = $this->_ee->lang;
+      $config = $this->EE->config;
+      $email  = $this->EE->email;
+      $lang   = $this->EE->lang;
   
       $entry_data = array(
           'date'          => time() - 100,
@@ -652,9 +652,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__notify_site_admin_of_log_entry__invalid_webmaster_email()
   {
-      $config = $this->_ee->config;
-      $email  = $this->_ee->email;
-      $lang   = $this->_ee->lang;
+      $config = $this->EE->config;
+      $email  = $this->EE->email;
+      $lang   = $this->EE->lang;
   
       $entry_data = array(
           'addon_name'    => 'Example Add-on',
@@ -689,9 +689,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__notify_site_admin_of_log_entry__email_not_sent()
   {
-      $config = $this->_ee->config;
-      $email  = $this->_ee->email;
-      $lang   = $this->_ee->lang;
+      $config = $this->EE->config;
+      $email  = $this->EE->email;
+      $lang   = $this->EE->lang;
   
       $entry_data = array(
           'addon_name'    => 'Example Add-on',
@@ -724,8 +724,8 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__save_entry_to_log__success()
   {
-      $db     = $this->_ee->db;
-      $email  = $this->_ee->email;
+      $db     = $this->EE->db;
+      $email  = $this->EE->email;
 
       // Ensures that the emails are added to the Omnilog_entry.
       $email->setReturnValue('valid_email', TRUE);
@@ -770,8 +770,8 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__save_entry_to_log__success_with_notify_admin()
   {
-      $db = $this->_ee->db;
-      $email  = $this->_ee->email;
+      $db = $this->EE->db;
+      $email  = $this->EE->email;
 
       // Ensures that the emails are added to the Omnilog_entry.
       $email->setReturnValue('valid_email', TRUE);
@@ -817,12 +817,12 @@ class Test_omnilog_model extends Testee_unit_test_case {
   public function test__save_entry_to_log__not_installed()
   {
       $exception_message = 'Exception';
-      $this->_ee->lang->setReturnValue('line', $exception_message);
+      $this->EE->lang->setReturnValue('line', $exception_message);
 
-      $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
-      $this->_ee->db->setReturnValue('table_exists', FALSE);
+      $this->EE->db->expectOnce('table_exists', array('omnilog_entries'));
+      $this->EE->db->setReturnValue('table_exists', FALSE);
 
-      $this->_ee->db->expectNever('insert');
+      $this->EE->db->expectNever('insert');
       $this->expectException(new Exception($exception_message));
 
       $this->_subject->save_entry_to_log(new Omnilog_entry());
@@ -832,12 +832,12 @@ class Test_omnilog_model extends Testee_unit_test_case {
   public function test__save_entry_to_log__missing_entry_data()
   {
       $exception_message = 'Exception';
-      $this->_ee->lang->setReturnValue('line', $exception_message);
+      $this->EE->lang->setReturnValue('line', $exception_message);
 
-      $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
-      $this->_ee->db->setReturnValue('table_exists', TRUE);
+      $this->EE->db->expectOnce('table_exists', array('omnilog_entries'));
+      $this->EE->db->setReturnValue('table_exists', TRUE);
 
-      $this->_ee->db->expectNever('insert');
+      $this->EE->db->expectNever('insert');
       $this->expectException(new Exception($exception_message));
 
       $this->_subject->save_entry_to_log(new Omnilog_entry());
@@ -857,14 +857,14 @@ class Test_omnilog_model extends Testee_unit_test_case {
       $entry = new Omnilog_entry($entry_props);
 
       $exception_message = 'Exception';
-      $this->_ee->lang->setReturnValue('line', $exception_message);
+      $this->EE->lang->setReturnValue('line', $exception_message);
 
-      $this->_ee->db->expectOnce('table_exists', array('omnilog_entries'));
-      $this->_ee->db->setReturnValue('table_exists', TRUE);
+      $this->EE->db->expectOnce('table_exists', array('omnilog_entries'));
+      $this->EE->db->setReturnValue('table_exists', TRUE);
 
-      $this->_ee->db->expectOnce('insert');
-      $this->_ee->db->expectOnce('insert_id');
-      $this->_ee->db->setReturnValue('insert_id', 0);
+      $this->EE->db->expectOnce('insert');
+      $this->EE->db->expectOnce('insert_id');
+      $this->EE->db->setReturnValue('insert_id', 0);
 
       $this->expectException(new Exception($exception_message));
       $this->_subject->save_entry_to_log($entry);
@@ -873,23 +873,23 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
   public function test__uninstall_module__success()
   {
-      $dbforge                    = $this->_ee->dbforge;
+      $dbforge                    = $this->EE->dbforge;
       $db_module_result           = $this->_get_mock('db_query');
       $db_module_row              = new StdClass();
       $db_module_row->module_id   = '10';
       $module_name                = ucfirst($this->_package_name);
 
-      $this->_ee->db->expectOnce('select', array('module_id'));
-      $this->_ee->db->expectOnce('get_where', array('modules', array('module_name' => $module_name), 1));
+      $this->EE->db->expectOnce('select', array('module_id'));
+      $this->EE->db->expectOnce('get_where', array('modules', array('module_name' => $module_name), 1));
 
-      $this->_ee->db->expectCallCount('delete', 3);
-      $this->_ee->db->expectAt(0, 'delete', array('module_member_groups', array('module_id' => $db_module_row->module_id)));
-      $this->_ee->db->expectAt(1, 'delete', array('modules', array('module_name' => $module_name)));
-      $this->_ee->db->expectAt(2, 'delete', array('actions', array('class' => $module_name)));
+      $this->EE->db->expectCallCount('delete', 3);
+      $this->EE->db->expectAt(0, 'delete', array('module_member_groups', array('module_id' => $db_module_row->module_id)));
+      $this->EE->db->expectAt(1, 'delete', array('modules', array('module_name' => $module_name)));
+      $this->EE->db->expectAt(2, 'delete', array('actions', array('class' => $module_name)));
 
       $dbforge->expectOnce('drop_table', array('omnilog_entries'));
 
-      $this->_ee->db->setReturnReference('get_where', $db_module_result);
+      $this->EE->db->setReturnReference('get_where', $db_module_result);
       $db_module_result->setReturnValue('num_rows', 1);
       $db_module_result->setReturnValue('row', $db_module_row);
 
@@ -901,11 +901,11 @@ class Test_omnilog_model extends Testee_unit_test_case {
   {
       $db_module_result = $this->_get_mock('db_query');
 
-      $this->_ee->db->expectOnce('select');
-      $this->_ee->db->expectOnce('get_where');
-      $this->_ee->db->expectNever('delete');
+      $this->EE->db->expectOnce('select');
+      $this->EE->db->expectOnce('get_where');
+      $this->EE->db->expectNever('delete');
 
-      $this->_ee->db->setReturnReference('get_where', $db_module_result);
+      $this->EE->db->setReturnReference('get_where', $db_module_result);
       $db_module_result->setReturnValue('num_rows', 0);
 
       $this->assertIdentical(FALSE, $this->_subject->uninstall_module());
@@ -947,7 +947,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
       $package_name       = 'example_package';
       $subject            = new Omnilog_model($package_name, $package_version);
 
-      $this->_ee->db->expectOnce('update', array(
+      $this->EE->db->expectOnce('update', array(
           'modules',
           array('module_version' => $package_version),
           array('module_name' => $this->_package_name)
@@ -975,9 +975,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
           'admin_emails' => array('type' => 'MEDIUMTEXT')
       );
 
-      $this->_ee->dbforge->expectAtLeastOnce('add_column');
+      $this->EE->dbforge->expectAtLeastOnce('add_column');
 
-      $this->_ee->dbforge->expectAt(0,
+      $this->EE->dbforge->expectAt(0,
         'add_column',
         array('omnilog_entries', $column)
       );
@@ -997,9 +997,9 @@ class Test_omnilog_model extends Testee_unit_test_case {
         'extended_data' => array('type' => 'TEXT')
       );
 
-      $this->_ee->dbforge->expectAtLeastOnce('add_column');
+      $this->EE->dbforge->expectAtLeastOnce('add_column');
 
-      $this->_ee->dbforge->expectAt(0,
+      $this->EE->dbforge->expectAt(0,
         'add_column',
         array('omnilog_entries', $column)
       );
@@ -1007,8 +1007,8 @@ class Test_omnilog_model extends Testee_unit_test_case {
       $sql = 'CREATE INDEX key_addon_name
         ON `exp_omnilog_entries` (`addon_name`)';
 
-      $this->_ee->db->expectAtLeastOnce('query');
-      $this->_ee->db->expectAt(0, 'query', array(
+      $this->EE->db->expectAtLeastOnce('query');
+      $this->EE->db->expectAt(0, 'query', array(
         new EqualWithoutWhitespaceExpectation($sql))
       );
 
