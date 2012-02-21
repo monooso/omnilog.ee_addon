@@ -8,7 +8,7 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/helpers/EI_number_helper' .EXT;
+require_once dirname(__FILE__) .'/../helpers/EI_number_helper.php';
 
 class Omnilog_entry {
 
