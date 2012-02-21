@@ -134,7 +134,7 @@ class Omnilog_mcp {
     ));
 
     $this->EE->javascript->compile();
-    
+
     $this->EE->cp->add_to_foot('<script type="text/javascript" src="'
       .$this->_theme_url .'common/js/cp.js"></script>');
 
