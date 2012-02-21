@@ -129,6 +129,37 @@ class Omnilog_model extends CI_Model {
 
 
   /**
+   * Returns an array of add-ons with one or more log entries in the OmniLog 
+   * table.
+   *
+   * @access  public
+   * @param   int|string    $site_id    The site ID. Defaults to current site.
+   * @return  array
+   */
+  public function get_addons_with_an_omnilog_entry($site_id = NULL)
+  {
+    // Ensure we have a valid site ID.
+    $site_id = valid_int($site_id, 1)
+      ? (int) $site_id : $this->EE->config->item('site_id');
+
+    $db_result = $this->EE->db
+      ->select('addon_name')
+      ->group_by('addon_name')
+      ->order_by('addon_name', 'asc')
+      ->get_where('omnilog_entries', array('site_id' => $site_id));
+
+    $addons = array();
+
+    foreach ($db_result->result() AS $db_addon)
+    {
+      $addons[] = $db_addon->addon_name;
+    }
+
+    return $addons;
+  }
+
+
+  /**
    * Returns the default log 'limit'. That is, the number of log entries
    * returned when calling the get_log_entries method.
    *
@@ -283,6 +314,37 @@ class Omnilog_model extends CI_Model {
     }
 
     return $this->_site_id;
+  }
+
+
+  /**
+   * Returns an array of entry types with one or more entries in the OmniLog 
+   * table.
+   *
+   * @access  public
+   * @param   int|string    $site_id    The site ID. Defaults to current site.
+   * @return  array
+   */
+  public function get_types_with_an_omnilog_entry($site_id = NULL)
+  {
+    // Ensure we have a valid site ID.
+    $site_id = valid_int($site_id, 1)
+      ? (int) $site_id : $this->EE->config->item('site_id');
+
+    $db_types = $this->EE->db
+      ->select('type')
+      ->group_by('type')
+      ->order_by('type', 'asc')
+      ->get_where('omnilog_entries', array('site_id' => $site_id));
+
+    $types = array();
+
+    foreach ($db_types->result() AS $db_type)
+    {
+      $types[] = $db_type->type;
+    }
+
+    return $types;
   }
 
 

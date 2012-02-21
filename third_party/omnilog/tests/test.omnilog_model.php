@@ -64,6 +64,94 @@ class Test_omnilog_model extends Testee_unit_test_case {
   }
 
 
+  public function test__get_addons_with_an_omnilog_entry__returns_array_of_addons()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array(
+      (object) array('addon_name' => 'Alfred'),
+      (object) array('addon_name' => 'Barbara'),
+      (object) array('addon_name' => 'Clement')
+    );
+
+    $expected_result = array('Alfred', 'Barbara', 'Clement');
+
+    $this->EE->db->expectOnce('select', array('addon_name'));
+    $this->EE->db->expectOnce('group_by', array('addon_name'));
+    $this->EE->db->expectOnce('order_by', array('addon_name', 'asc'));
+    $this->EE->db->expectOnce('get_where',
+      array('omnilog_entries', array('site_id' => $this->_site_id)));
+
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->assertIdentical($expected_result,
+      $this->_subject->get_addons_with_an_omnilog_entry());
+  }
+
+
+  public function test__get_addons_with_an_omnilog_entry__returns_empty_array_if_no_addons_in_table()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array();
+
+    $this->EE->db->expectOnce('select');
+    $this->EE->db->expectOnce('group_by');
+    $this->EE->db->expectOnce('order_by');
+    $this->EE->db->expectOnce('get_where');
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->assertIdentical(array(),
+      $this->_subject->get_addons_with_an_omnilog_entry());
+  }
+
+
+  public function test__get_addons_with_an_omnilog_entry__honors_custom_site_id()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array();
+    $site_id    = 123;
+
+    $this->EE->db->expectOnce('select');
+    $this->EE->db->expectOnce('group_by');
+    $this->EE->db->expectOnce('order_by');
+    $this->EE->db->expectOnce('get_where',
+      array('omnilog_entries', array('site_id' => $site_id)));
+
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->_subject->get_addons_with_an_omnilog_entry($site_id);
+  }
+
+
+  public function test__get_addons_with_an_omnilog_entry__ignores_invalid_custom_site_id()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array();
+    $site_id    = 'wibble';
+
+    $this->EE->db->expectOnce('select');
+    $this->EE->db->expectOnce('group_by');
+    $this->EE->db->expectOnce('order_by');
+    $this->EE->db->expectOnce('get_where',
+      array('omnilog_entries', array('site_id' => $this->_site_id)));
+
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->_subject->get_addons_with_an_omnilog_entry($site_id);
+  }
+
+
   public function test__get_installed_version__success()
   {
     $db         = $this->EE->db;
@@ -323,6 +411,97 @@ class Test_omnilog_model extends Testee_unit_test_case {
     }
 
     $this->_subject->install_module_actions();
+  }
+
+
+  public function test__get_types_with_an_omnilog_entry__returns_array_of_types()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array(
+      (object) array('type' => 'chico'),
+      (object) array('type' => 'harpo'),
+      (object) array('type' => 'groucho'),
+      (object) array('type' => 'zeppo')
+    );
+
+    $expected_result = array('chico', 'harpo', 'groucho', 'zeppo');
+
+    $this->EE->db->expectOnce('select', array('type'));
+    $this->EE->db->expectOnce('group_by', array('type'));
+    $this->EE->db->expectOnce('order_by', array('type', 'asc'));
+    $this->EE->db->expectOnce('get_where',
+      array('omnilog_entries', array('site_id' => $this->_site_id)));
+
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->assertIdentical($expected_result,
+      $this->_subject->get_types_with_an_omnilog_entry());
+  }
+
+
+
+  public function test__get_types_with_an_omnilog_entry__returns_empty_array_if_no_entries_in_database()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array();
+
+    $this->EE->db->expectOnce('select');
+    $this->EE->db->expectOnce('group_by');
+    $this->EE->db->expectOnce('order_by');
+    $this->EE->db->expectOnce('get_where');
+
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->assertIdentical(array(),
+      $this->_subject->get_types_with_an_omnilog_entry());
+  }
+
+
+  public function test__get_types_with_an_omnilog_entry__honors_custom_site_id()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array();
+    $site_id    = 1234;
+
+    $this->EE->db->expectOnce('select');
+    $this->EE->db->expectOnce('group_by');
+    $this->EE->db->expectOnce('order_by');
+    $this->EE->db->expectOnce('get_where',
+      array('omnilog_entries', array('site_id' => $site_id)));
+
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->_subject->get_types_with_an_omnilog_entry($site_id);
+  }
+
+
+  public function test__get_types_with_an_omnilog_entry__ignores_invalid_custom_site_id()
+  {
+    $db_result  = $this->_get_mock('db_query');
+    $db_rows    = array();
+    $site_id    = 'wibble';
+
+    $this->EE->db->expectOnce('select');
+    $this->EE->db->expectOnce('group_by');
+    $this->EE->db->expectOnce('order_by');
+    $this->EE->db->expectOnce('get_where',
+      array('omnilog_entries', array('site_id' => $this->_site_id)));
+
+    $this->EE->db->returns('get_where', $db_result);
+
+    $db_result->expectOnce('result');
+    $db_result->returns('result', $db_rows);
+
+    $this->_subject->get_types_with_an_omnilog_entry($site_id);
   }
 
 
