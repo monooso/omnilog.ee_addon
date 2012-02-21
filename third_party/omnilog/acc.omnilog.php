@@ -19,12 +19,12 @@ class Omnilog_acc {
   public $name;
   public $sections;
   public $version;
-  
-  
+
+
   /* --------------------------------------------------------------
    * PUBLIC METHODS
    * ------------------------------------------------------------ */
-  
+
   /**
    * Constructor.
    *
@@ -85,6 +85,19 @@ class Omnilog_acc {
       'log_entries'     => $this->_model->get_log_entries(NULL, 10),
       'webmaster_email' => $this->EE->config->item('webmaster_email')
     );
+
+    // Language strings required by JS.
+    $this->EE->load->library('javascript');
+
+    $this->EE->javascript->set_global('omnilog.lang', array(
+      'lblShow' => $this->EE->lang->line('lbl_show'),
+      'lblHide' => $this->EE->lang->line('lbl_hide')
+    ));
+
+    $this->EE->javascript->compile();
+
+    $this->EE->cp->add_to_foot('<script type="text/javascript" src="'
+      .$this->_theme_url .'common/js/cp.js"></script>');
 
     $this->sections[$this->EE->lang->line('hd_log')]
       = $this->EE->load->view('accessory', $vars, TRUE);
