@@ -3,9 +3,9 @@
 /**
  * OmniLog module tests.
  *
- * @author        Stephen Lewis <stephen@experienceinternet.co.uk>
- * @copyright     Experience Internet
- * @package       Omnilog
+ * @author          Stephen Lewis (http://github.com/experience/)
+ * @copyright       Experience Internet
+ * @package         Omnilog
  */
 
 require_once dirname(__FILE__) .'/../mcp.omnilog.php';
