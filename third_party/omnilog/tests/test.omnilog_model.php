@@ -8,7 +8,7 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/models/omnilog_model.php';
+require_once dirname(__FILE__) .'/../models/omnilog_model.php';
 
 // Helpers (not mocked).
 require_once BASEPATH .'helpers/text_helper.php';
