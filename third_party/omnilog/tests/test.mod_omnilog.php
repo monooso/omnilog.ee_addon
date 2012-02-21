@@ -33,8 +33,8 @@ class Test_omnilog extends Testee_unit_test_case {
 
         Mock::generate('Omnilog_model', get_class($this) .'_mock_model');
 
-        $this->_ee->omnilog_model = $this->_get_mock('model');
-        $this->_model   = $this->_ee->omnilog_model;
+        $this->EE->omnilog_model = $this->_get_mock('model');
+        $this->_model   = $this->EE->omnilog_model;
         $this->_subject = new Omnilog();
     }
 
