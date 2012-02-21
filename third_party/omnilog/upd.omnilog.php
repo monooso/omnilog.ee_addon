@@ -10,7 +10,7 @@
 
 class Omnilog_upd {
     
-    private $_ee;
+    private $EE;
     private $_model;
     public $version;
     
@@ -27,11 +27,11 @@ class Omnilog_upd {
      */
     public function __construct()
     {
-        $this->_ee =& get_instance();
-        $this->_ee->load->add_package_path(PATH_THIRD .'omnilog/');
+        $this->EE =& get_instance();
+        $this->EE->load->add_package_path(PATH_THIRD .'omnilog/');
 
-        $this->_ee->load->model('omnilog_model');
-        $this->_model = $this->_ee->omnilog_model;
+        $this->EE->load->model('omnilog_model');
+        $this->_model = $this->EE->omnilog_model;
         
         $this->version = $this->_model->get_package_version();
     }
