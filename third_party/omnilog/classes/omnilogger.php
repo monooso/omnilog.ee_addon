@@ -20,7 +20,7 @@ class Omnilogger {
    * Adds an entry to the log.
    *
    * @access  public
-   * @param Omnilog_entry   $entry        The log entry.
+   * @param   Omnilog_entry     $entry      The log entry.
    * @return  bool
    */
   public static function log(Omnilog_entry $entry)
