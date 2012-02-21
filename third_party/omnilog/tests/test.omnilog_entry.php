@@ -8,7 +8,7 @@
  * @package         Omnilog
  */
 
-require_once PATH_THIRD .'omnilog/classes/omnilog_entry.php';
+require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
 
 class Test_omnilog_entry extends Testee_unit_test_case {
 
