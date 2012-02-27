@@ -106,11 +106,32 @@ class Omnilog_mcp {
     $log_count  = $this->_model->get_log_entries_count();
     $log_limit  = $this->_model->get_default_log_limit();
 
-    $log_start  = valid_int($this->EE->input->get('start'), 0)
-      ? (int) $this->EE->input->get('start') : 0;
+    /**
+     * Retrieve the matching log entries:
+     * - Filtered by entry type.
+     * - Filtered by add-on.
+     * - Paginated.
+     */
 
-    $log_entries = $this->_model->get_log_entries(NULL, $log_limit, $log_start);
+    $in = $this->EE->input;
 
+    $post_addon = $in->post('filter_addon', TRUE);
+    $post_type  = $in->post('filter_type', TRUE);
+
+    $addon_filter = ($post_addon && $post_addon != 'null')
+      ? urldecode($post_addon) : NULL;
+
+    $type_filter = ($post_type && $post_type != 'null')
+      ? urldecode($post_type) : NULL;
+
+    $log_start = ($addon_filter OR $type_filter)
+      ? 0 : (valid_int($in->get('start'), 0) ? (int) $in->get('start') : 0);
+
+    $log_entries = $this->_model->get_log_entries(NULL, $log_limit, $log_start,
+      $addon_filter, $type_filter);
+
+
+    // Prepare the log pagination navigation.
     $next_url = ($log_start + $log_limit) < $log_count
       ? $this->_base_url .AMP .'start=' .($log_start + $log_limit)
       : '';
@@ -119,21 +140,38 @@ class Omnilog_mcp {
       ? $this->_base_url .AMP .'start=' .(max(($log_start - $log_limit), 0))
       : '';
 
-    $entry_types = array(
-      'error'   => 'Error',
-      'notice'  => 'Notice',
-      'warning' => 'Warning'
-    );
 
-    $filter_form_action = $this->_base_url .AMP .'start=' .$log_start;
+    // Prepare the log filter options.
+    $addons = $this->_model->get_addons_with_an_omnilog_entry();
+    $types  = $this->_model->get_types_with_an_omnilog_entry();
 
+    $view_addons = array(
+      'null' => $this->EE->lang->line('lbl_filter_by_addon'));
+
+    foreach ($addons AS $addon)
+    {
+      $view_addons[urlencode($addon)] = $addon;
+    }
+
+    $view_types = array('null' => $this->EE->lang->line('lbl_filter_by_type'));
+
+    foreach ($types AS $type)
+    {
+      $view_types[urlencode($type)] = $this->EE->lang->line('lbl_type_' .$type);
+    }
+
+
+    // Prepare the view variables.
     $vars = array(
+      'addon_filter'    => $post_addon,
       'cp_page_title'   => $this->EE->lang->line('hd_log'),
-      'entry_types'     => $entry_types,
-      'form_action'     => $filter_form_action,
+      'filter_addons'   => $view_addons,
+      'filter_types'    => $view_types,
+      'form_action'     => $this->_base_qs,
       'log_entries'     => $log_entries,
       'next_url'        => $next_url,
       'previous_url'    => $previous_url,
+      'type_filter'     => $post_type,
       'webmaster_email' => $this->EE->config->item('webmaster_email')
     );
 

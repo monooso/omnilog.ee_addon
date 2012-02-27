@@ -115,20 +115,24 @@ $lang = array(
 /* --------------------------------------------------------------
  * LOG
  * ------------------------------------------------------------ */
-'hd_log'            => 'OmniLog',
+'hd_log'              => 'OmniLog',
 
-'lbl_no'            => 'No',
-'lbl_type_notice'   => 'Notice',
-'lbl_type_warning'  => 'Warning',
-'lbl_type_error'    => 'Error',
-'lbl_yes'           => 'Yes',
+'lbl_all'             => 'All',
+'lbl_filter'          => 'Filter',
+'lbl_filter_by_addon' => 'All Add-ons',
+'lbl_filter_by_type'  => 'All Entry Types',
+'lbl_no'              => 'No',
+'lbl_type_notice'     => 'Notice',
+'lbl_type_warning'    => 'Warning',
+'lbl_type_error'      => 'Error',
+'lbl_yes'             => 'Yes',
 
-'thd_addon'         => 'Add-on',
-'thd_date'          => 'Date',
-'thd_type'          => 'Entry Type',
-'thd_message'       => 'Message',
-'thd_extended_data'	=> 'Extended Data',
-'thd_notify_admin'  => 'Notify Admin?',
+'thd_addon'           => 'Add-on',
+'thd_date'            => 'Date',
+'thd_type'            => 'Entry Type',
+'thd_message'         => 'Message',
+'thd_extended_data'	  => 'Extended Data',
+'thd_notify_admin'    => 'Notify Admin?',
 
 
 /* --------------------------------------------------------------
