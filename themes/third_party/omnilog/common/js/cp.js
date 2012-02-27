@@ -29,6 +29,19 @@
       var $td = $(this);
       var $body, $link;
 
+      /*
+       * Rather rudimentary way of ensuring that the extended data doesn't get
+       * initialised twice on the main log page, when the accessory is also
+       * present. You'd think EE would be smart enough to not include the same
+       * JS file twice, but apparently not.
+       */
+
+      if ($td.hasClass('initialized')) {
+        return;
+      }
+
+      $td.addClass('initialized');
+
       // Create the new HTML elements.
       $td.wrapInner('<div class="extended_data_body" />');
       $td.append('<a href="#" class="extended_data_toggle">'

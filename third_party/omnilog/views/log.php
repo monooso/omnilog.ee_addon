@@ -1,4 +1,18 @@
 <div class="experienceinternet">
+<div id="filterMenu">
+  <fieldset>
+    <legend>Filter Entries</legend>
+
+    <?php echo form_open($form_action); ?>
+      <div class="group">
+        <?php echo form_dropdown('filter_addon', $filter_addons, $addon_filter); ?>
+        <?php echo form_dropdown('filter_type', $filter_types, $type_filter); ?>
+        <?php echo form_submit('submit', lang('lbl_filter'), 'class="submit"'); ?>
+      </div>
+    <?php echo form_close(); ?>
+  </fieldset>
+</div>
+
 <table class="mainTable padTable" cellpadding="0" cellspacing="0">
   <thead>
     <tr>

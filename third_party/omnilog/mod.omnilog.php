@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('Direct script access is not permitted.');
+<?php if ( ! defined('BASEPATH')) exit('Direct script access not permitted.');
 
 /**
  * OmniLog module.
@@ -9,28 +9,28 @@
  */
 
 class Omnilog {
-    
-    private $_ee;
-    private $_model;
-    public $return_data = '';
-    
-    
-    /* --------------------------------------------------------------
-     * PUBLIC METHODS
-     * ------------------------------------------------------------ */
 
-    /**
-     * Constructor.
-     *
-     * @access  public
-     * @return  void
-     */
-    public function __construct()
-    {
-        $this->_ee =& get_instance();
-        $this->_ee->load->model('omnilog_model');
-        $this->_model = $this->_ee->omnilog_model;
-    }
+  private $EE;
+  private $_model;
+  public $return_data = '';
+
+
+  /* --------------------------------------------------------------
+   * PUBLIC METHODS
+   * ------------------------------------------------------------ */
+
+  /**
+   * Constructor.
+   *
+   * @access  public
+   * @return  void
+   */
+  public function __construct()
+  {
+    $this->EE =& get_instance();
+    $this->EE->load->model('omnilog_model');
+    $this->_model = $this->EE->omnilog_model;
+  }
 
 
 }

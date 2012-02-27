@@ -49,6 +49,10 @@
     vertical-align      : top;
   }
 
+  .experienceinternet #filterMenu select {
+    margin-right        : 10px;
+  }
+
   .experienceinternet .button {
     white-space         : nowrap;
   }
