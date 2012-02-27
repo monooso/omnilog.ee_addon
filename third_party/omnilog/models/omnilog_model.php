@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.3.0
+ * @version         1.4.0
  */
 
 require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
@@ -97,17 +97,12 @@ class Omnilog_model extends CI_Model {
     parent::__construct();
     $this->EE =& get_instance();
 
-    $this->_namespace = $namespace
-      ? strtolower($namespace)
-      : 'experience';
+    $this->_namespace = $namespace ? strtolower($namespace) : 'experience';
 
-    $this->_package_name = $package_name
-      ? strtolower($package_name)
+    $this->_package_name = $package_name ? strtolower($package_name)
       : 'omnilog';
 
-    $this->_package_version = $package_version
-      ? $package_version
-      : '1.3.0';
+    $this->_package_version = $package_version ? $package_version : '1.4.0';
 
     $this->_log_limit = 50;
 
@@ -117,8 +112,7 @@ class Omnilog_model extends CI_Model {
         $this->EE->session->cache[$this->_namespace] = array();
     }
 
-    if ( ! array_key_exists(
-      $this->_package_name,
+    if ( ! array_key_exists($this->_package_name,
       $this->EE->session->cache[$this->_namespace])
     )
     {
