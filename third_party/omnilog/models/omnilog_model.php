@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.4.0
+ * @version         1.4.1
  */
 
 require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
@@ -116,7 +116,7 @@ class Omnilog_model extends CI_Model {
     $this->_package_name = $package_name ? strtolower($package_name)
       : 'omnilog';
 
-    $this->_package_version = $package_version ? $package_version : '1.4.0';
+    $this->_package_version = $package_version ? $package_version : '1.4.1';
 
     $this->_log_limit = 50;
 
