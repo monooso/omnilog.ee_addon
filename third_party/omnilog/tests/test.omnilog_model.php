@@ -451,25 +451,6 @@ class Test_omnilog_model extends Testee_unit_test_case {
   }
 
 
-  public function test__install_module_actions__success()
-  {
-    $query_data = array(
-        array('class' => ucfirst($this->_package_name), 'method' => '')
-    );
-
-    $query_count = count($query_data);
-    $this->EE->db->expectCallCount('insert', $query_count);
-
-    for ($count = 0; $count < $query_count; $count++)
-    {
-      $this->EE->db->expectAt($count, 'insert',
-        array('actions', $query_data[$count]));
-    }
-
-    $this->_subject->install_module_actions();
-  }
-
-
   public function test__get_types_with_an_omnilog_entry__returns_array_of_types()
   {
     $db_result  = $this->_get_mock('db_query');
@@ -1275,6 +1256,20 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $this->EE->db->expectAtLeastOnce('query');
     $this->EE->db->expectAt(0, 'query',
       array(new EqualWithoutWhitespaceExpectation($sql)));
+
+    $this->assertIdentical(TRUE, $subject->update_package($installed_version));
+  }
+
+
+  public function test__update_package__update_to_version_141()
+  {
+    $installed_version  = '1.4.0';
+    $package_version    = '1.4.1';
+    $package_name       = 'example_package';
+    $subject            = new Omnilog_model($package_name, $package_version);
+
+    $this->EE->db->expectOnce('delete', array('actions',
+      array('class' => ucfirst($this->_package_name))));
 
     $this->assertIdentical(TRUE, $subject->update_package($installed_version));
   }

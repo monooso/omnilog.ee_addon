@@ -54,6 +54,7 @@ class Omnilog_model extends CI_Model {
     );
   }
 
+
   /**
    * Performs the necessary updates when upgrading to v1.2.2.
    *
@@ -72,6 +73,19 @@ class Omnilog_model extends CI_Model {
     // Add an index to the OmniLog entries table.
     $this->EE->db->query('CREATE INDEX key_addon_name
       ON `exp_omnilog_entries` (`addon_name`)');
+  }
+
+
+  /**
+   * Performs the necessary updates when upgrading to v1.4.1
+   *
+   * @access  private
+   * @return  void
+   */
+  private function _update_package_to_version_141()
+  {
+    $this->EE->db->delete('actions',
+      array('class' => ucfirst($this->get_package_name())));
   }
 
 
@@ -369,25 +383,8 @@ class Omnilog_model extends CI_Model {
   public function install_module()
   {
     $this->install_module_register();
-    $this->install_module_actions();
     $this->install_module_entries_table();
-
     return TRUE;
-  }
-
-
-  /**
-   * Register the module actions in the database.
-   *
-   * @access  public
-   * @return  void
-   */
-  public function install_module_actions()
-  {
-    $this->EE->db->insert('actions', array(
-      'class'     => ucfirst($this->get_package_name()),
-      'method'    => ''
-    ));
   }
 
 
@@ -669,6 +666,11 @@ class Omnilog_model extends CI_Model {
     if (version_compare($installed_version, '1.2.2', '<'))
     {
       $this->_update_package_to_version_122();
+    }
+
+    if (version_compare($installed_version, '1.4.1', '<'))
+    {
+      $this->_update_package_to_version_141();
     }
 
     // Forcibly update the module version number?
