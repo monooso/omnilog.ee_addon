@@ -219,13 +219,15 @@ class Omnilog_model extends CI_Model {
    * the current site are returned.
    *
    * @access  public
-   * @param   int|string    $site_id    Restrict to the specified site ID.
-   * @param   int           $limit      Maximum number of entries to retrieve.
-   * @param   int           $offset     The number of entries to skip.
+   * @param   int|string  $site_id        Restrict to the specified site ID.
+   * @param   int         $limit          Maximum number of entries to retrieve.
+   * @param   int         $offset         The number of entries to skip.
+   * @param   string      $addon_filter   Restrict to the specifed add-on.
+   * @param   string      $type_filter    Restrict to the specified entry type.
    * @return  array
    */
   public function get_log_entries($site_id = NULL, $limit = NULL,
-    $offset = NULL
+    $offset = NULL, $addon_filter = NULL, $type_filter = NULL
   )
   {
     // Ensure we have valid arguments.
@@ -238,10 +240,26 @@ class Omnilog_model extends CI_Model {
     $offset = valid_int($offset, 0) ? (int) $offset : 0;
 
     $db = $this->EE->db;
-    $db_result = $db
+
+    $db
       ->select('addon_name, admin_emails, date, log_entry_id, message,
         extended_data, notify_admin, type')
-      ->where(array('site_id' => $site_id))
+      ->where('site_id', $site_id);
+
+    // Filter by add-on.
+    if ($addon_filter)
+    {
+      $db->where('addon_name', $addon_filter);
+    }
+
+    // Filter by entry type.
+    if (is_string($type_filter))
+    {
+      $db->where('type', $type_filter);
+    }
+
+    // Run the query.
+    $db_result = $db
       ->order_by('log_entry_id', 'desc')
       ->get('omnilog_entries', $limit, $offset);
 

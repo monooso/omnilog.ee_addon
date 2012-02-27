@@ -206,7 +206,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $db->expectOnce('select',
       array(new EqualWithoutWhitespaceExpectation($select_fields)));
 
-    $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+    $db->expectOnce('where', array('site_id', $this->_site_id));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
     $db->expectOnce('get', array('omnilog_entries', $limit, 0));
 
@@ -282,7 +282,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $db->expectOnce('select',
       array(new EqualWithoutWhitespaceExpectation($select_fields)));
 
-    $db->expectOnce('where', array(array('site_id' => $site_id)));
+    $db->expectOnce('where', array('site_id', $site_id));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
     $db->expectOnce('get', array('omnilog_entries', $limit, 0));
 
@@ -350,7 +350,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $db->expectOnce('select',
       array(new EqualWithoutWhitespaceExpectation($select_fields)));
 
-    $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+    $db->expectOnce('where', array('site_id', $this->_site_id));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
     $db->expectOnce('get', array('omnilog_entries', $limit, 0));
 
@@ -363,7 +363,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
   }
 
 
-  public function test__get_log_entries__works_with_custom_offset()
+  public function test__get_log_entries__success_with_custom_offset()
   {
     $db     = $this->EE->db;
     $limit  = $this->_subject->get_default_log_limit();
@@ -375,7 +375,7 @@ class Test_omnilog_model extends Testee_unit_test_case {
     $db->expectOnce('select',
       array(new EqualWithoutWhitespaceExpectation($select_fields)));
 
-    $db->expectOnce('where', array(array('site_id' => $this->_site_id)));
+    $db->expectOnce('where', array('site_id', $this->_site_id));
     $db->expectOnce('order_by', array('log_entry_id', 'desc'));
     $db->expectOnce('get', array('omnilog_entries', $limit, $offset));
 
@@ -385,6 +385,62 @@ class Test_omnilog_model extends Testee_unit_test_case {
 
     $this->assertIdentical(array(),
       $this->_subject->get_log_entries(NULL, NULL, $offset));
+  }
+
+
+  public function test__get_log_entries__success_with_addon_filter()
+  {
+    $addon_name = 'Example Addon';
+    $db         = $this->EE->db;
+    $limit      = $this->_subject->get_default_log_limit();
+    $offset     = 0;
+
+    $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
+      extended_data, notify_admin, type';
+
+    $db->expectOnce('select',
+      array(new EqualWithoutWhitespaceExpectation($select_fields)));
+
+    $db->expectCallCount('where', 2);
+    $db->expectAt(0, 'where', array('site_id', $this->_site_id));
+    $db->expectAt(1, 'where', array('addon_name', $addon_name));
+    $db->expectOnce('order_by', array('log_entry_id', 'desc'));
+    $db->expectOnce('get', array('omnilog_entries', $limit, $offset));
+
+    $db_result = $this->_get_mock('db_query');
+    $db->setReturnReference('get', $db_result);
+    $db_result->setReturnValue('result_array', array());
+
+    $this->assertIdentical(array(),
+      $this->_subject->get_log_entries(NULL, NULL, NULL, $addon_name));
+  }
+
+
+  public function test__get_log_entries__success_with_entry_type_filter()
+  {
+    $entry_type = 'notice';
+    $db         = $this->EE->db;
+    $limit      = $this->_subject->get_default_log_limit();
+    $offset     = 0;
+
+    $select_fields = 'addon_name, admin_emails, date, log_entry_id, message,
+      extended_data, notify_admin, type';
+
+    $db->expectOnce('select',
+      array(new EqualWithoutWhitespaceExpectation($select_fields)));
+
+    $db->expectCallCount('where', 2);
+    $db->expectAt(0, 'where', array('site_id', $this->_site_id));
+    $db->expectAt(1, 'where', array('type', $entry_type));
+    $db->expectOnce('order_by', array('log_entry_id', 'desc'));
+    $db->expectOnce('get', array('omnilog_entries', $limit, $offset));
+
+    $db_result = $this->_get_mock('db_query');
+    $db->setReturnReference('get', $db_result);
+    $db_result->setReturnValue('result_array', array());
+
+    $this->assertIdentical(array(),
+      $this->_subject->get_log_entries(NULL, NULL, NULL, NULL, $entry_type));
   }
 
 
