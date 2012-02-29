@@ -64,14 +64,36 @@ class Test_omnilog_model extends Testee_unit_test_case {
   }
 
 
-  public function test__clear_log__clears_log_for_current_site_and_returns_true()
+  public function test__clear_log__clears_log_for_current_site()
   {
     $this->EE->db->expectOnce('delete', array('omnilog_entries',
       array('site_id' => $this->_site_id)));
   
-    $this->assertIdentical(TRUE, $this->_subject->clear_log());
+    $this->_subject->clear_log();
   }
+
+
+  public function test__clear_log__honors_valid_site_id()
+  {
+    $site_id = '1234';
+
+    $this->EE->db->expectOnce('delete', array('omnilog_entries',
+      array('site_id' => intval($site_id))));
   
+    $this->_subject->clear_log($site_id);
+  }
+
+
+  public function test__clear_log__ignores_invalid_site_id()
+  {
+    $this->EE->db->expectCallCount('delete', 4, array('omnilog_entries',
+      array('site_id' => $this->_site_id)));
+  
+    $this->_subject->clear_log(0);
+    $this->_subject->clear_log('invalid');
+    $this->_subject->clear_log(array());
+    $this->_subject->clear_log(new StdClass());
+  }
 
 
   public function test__get_addons_with_an_omnilog_entry__returns_array_of_addons()

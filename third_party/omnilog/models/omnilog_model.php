@@ -145,7 +145,8 @@ class Omnilog_model extends CI_Model {
    */
   public function clear_log($site_id = NULL)
   {
-    $site_id = $this->get_site_id();
+    $site_id = valid_int($site_id, 1)
+      ? (int) $site_id : $this->get_site_id();
 
     $this->EE->db->delete('omnilog_entries', array('site_id' => $site_id));
     return TRUE;
