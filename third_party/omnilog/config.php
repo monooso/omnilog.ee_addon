@@ -9,7 +9,7 @@
  */
 
 $config['name']     = 'OmniLog';
-$config['version']  = '1.3.0';
+$config['version']  = '1.5.0';
 $config['nsm_addon_updater']['versions_xml']
   = 'http://experienceinternet.co.uk/software/feeds/omnilog';
 
