@@ -137,6 +137,22 @@ class Omnilog_model extends CI_Model {
 
 
   /**
+   * Clears all the log entries for the specified site.
+   *
+   * @access  public
+   * @param   int|string    $site_id    The site ID.
+   * @return  bool
+   */
+  public function clear_log($site_id = NULL)
+  {
+    $site_id = $this->get_site_id();
+
+    $this->EE->db->delete('omnilog_entries', array('site_id' => $site_id));
+    return TRUE;
+  }
+
+
+  /**
    * Returns an array of add-ons with one or more log entries in the OmniLog 
    * table.
    *
