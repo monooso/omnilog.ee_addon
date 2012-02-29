@@ -54,8 +54,22 @@ class Omnilog_mcp {
 
     $this->EE->cp->set_right_nav(array(
       'nav_log'   => $this->_base_url .AMP .'method=log',
-      'nav_demo'  => $this->_base_url .AMP .'method=demo'
+      'nav_demo'  => $this->_base_url .AMP .'method=demo',
+      'nav_reset' => $this->_base_url .AMP .'method=clear_log'
     ));
+  }
+
+
+  /**
+   * Clears all the log entries for the current site.
+   *
+   * @access  public
+   * @return  string
+   */
+  public function clear_log()
+  {
+    $this->_model->clear_log();
+    return $this->log();
   }
 
 

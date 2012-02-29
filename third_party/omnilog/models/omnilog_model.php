@@ -6,7 +6,7 @@
  * @author          Stephen Lewis (http://github.com/experience/)
  * @copyright       Experience Internet
  * @package         Omnilog
- * @version         1.4.1
+ * @version         1.5.0
  */
 
 require_once dirname(__FILE__) .'/../classes/omnilog_entry.php';
@@ -116,7 +116,7 @@ class Omnilog_model extends CI_Model {
     $this->_package_name = $package_name ? strtolower($package_name)
       : 'omnilog';
 
-    $this->_package_version = $package_version ? $package_version : '1.4.1';
+    $this->_package_version = $package_version ? $package_version : '1.5.0';
 
     $this->_log_limit = 50;
 
@@ -137,6 +137,23 @@ class Omnilog_model extends CI_Model {
 
 
   /**
+   * Clears all the log entries for the specified site.
+   *
+   * @access  public
+   * @param   int|string    $site_id    The site ID.
+   * @return  void
+   */
+  public function clear_log($site_id = NULL)
+  {
+    $site_id = valid_int($site_id, 1)
+      ? (int) $site_id : $this->get_site_id();
+
+    $this->EE->db->delete('omnilog_entries', array('site_id' => $site_id));
+    return TRUE;
+  }
+
+
+  /**
    * Returns an array of add-ons with one or more log entries in the OmniLog 
    * table.
    *
@@ -148,7 +165,7 @@ class Omnilog_model extends CI_Model {
   {
     // Ensure we have a valid site ID.
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     $db_result = $this->EE->db
       ->select('addon_name')
@@ -214,7 +231,7 @@ class Omnilog_model extends CI_Model {
   public function get_log_entries_count($site_id = NULL)
   {
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     return $this->EE->db
       ->where(array('site_id' => $site_id))
@@ -240,7 +257,7 @@ class Omnilog_model extends CI_Model {
   {
     // Ensure we have valid arguments.
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     $limit = valid_int($limit, 1)
       ? (int) $limit : $this->get_default_log_limit();
@@ -355,7 +372,7 @@ class Omnilog_model extends CI_Model {
   {
     // Ensure we have a valid site ID.
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     $db_types = $this->EE->db
       ->select('type')
