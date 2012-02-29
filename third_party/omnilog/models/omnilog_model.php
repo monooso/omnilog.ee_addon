@@ -141,7 +141,7 @@ class Omnilog_model extends CI_Model {
    *
    * @access  public
    * @param   int|string    $site_id    The site ID.
-   * @return  bool
+   * @return  void
    */
   public function clear_log($site_id = NULL)
   {
@@ -165,7 +165,7 @@ class Omnilog_model extends CI_Model {
   {
     // Ensure we have a valid site ID.
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     $db_result = $this->EE->db
       ->select('addon_name')
@@ -231,7 +231,7 @@ class Omnilog_model extends CI_Model {
   public function get_log_entries_count($site_id = NULL)
   {
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     return $this->EE->db
       ->where(array('site_id' => $site_id))
@@ -257,7 +257,7 @@ class Omnilog_model extends CI_Model {
   {
     // Ensure we have valid arguments.
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     $limit = valid_int($limit, 1)
       ? (int) $limit : $this->get_default_log_limit();
@@ -372,7 +372,7 @@ class Omnilog_model extends CI_Model {
   {
     // Ensure we have a valid site ID.
     $site_id = valid_int($site_id, 1)
-      ? (int) $site_id : $this->EE->config->item('site_id');
+      ? (int) $site_id : $this->get_site_id();
 
     $db_types = $this->EE->db
       ->select('type')
